@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.11.6-slim-bullseye
 
 WORKDIR /backend
 
