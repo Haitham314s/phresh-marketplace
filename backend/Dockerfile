@@ -1,4 +1,4 @@
-FROM python:3.12.0-slim-bullseye
+FROM python:3.8-slim-buster
 
 WORKDIR /backend
 
@@ -9,7 +9,7 @@ RUN apt-get update \
   && apt-get -y install netcat gcc postgresql \
   && apt-get clean
 
-RUN pip install -U pip
+RUN pip install --upgrade pip
 COPY ./requirements.txt /backend/requirements.txt
 RUN pip install -r requirements.txt
 
