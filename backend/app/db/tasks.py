@@ -1,7 +1,8 @@
 import logging
 
-from app.core.config import DATABASE_URL
 from tortoise import Tortoise
+
+from app.core.config import DATABASE_URL
 
 logger = logging.getLogger(__name__)
 

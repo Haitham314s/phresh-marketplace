@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 from app.models.cleaning import Cleaning, CleaningType

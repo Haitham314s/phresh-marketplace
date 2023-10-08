@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, status
 
@@ -8,26 +9,24 @@ from app.models.schemas.cleaning import CleaningBase, CleaningOut
 router = APIRouter()
 
 
-@router.get("/")
-async def get_all_cleanings() -> List[dict]:
-    return [
-        {
-            "id": 1,
-            "name": "My house",
-            "cleaning_type": "full_clean",
-            "price_per_hour": 29.99,
-        },
-        {
-            "id": 2,
-            "name": "Someone else's house",
-            "cleaning_type": "spot_clean",
-            "price_per_hour": 19.99,
-        },
-    ]
+@router.get("s", response_model=List[CleaningOut], response_model_exclude_none=True)
+async def get_all_cleanings():
+    cleaning_repo = CleaningRepository()
+    return await cleaning_repo.get_cleanings()
+
+
+@router.get(
+    "/{cleaning_id}", response_model=CleaningOut, response_model_exclude_none=True
+)
+async def get_cleaning(cleaning_id: UUID):
+    cleaning_repo = CleaningRepository()
+    cleaning = await cleaning_repo.get_cleaning(cleaning_id)
+
+    return cleaning
 
 
 @router.post(
-    "/",
+    "",
     response_model=CleaningOut,
     response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
@@ -37,3 +36,12 @@ async def create_new_cleaning(new_cleaning: CleaningBase):
     cleaning_out = await cleaning_repo.create_cleaning(new_cleaning)
     print(f"CLEANING_OUT: {cleaning_out}")
     return cleaning_out
+
+
+@router.delete(
+    "/{cleaning_id}", response_model=CleaningOut, response_model_exclude_none=True
+)
+async def get_cleaning(cleaning_id: UUID):
+    cleaning_repo = CleaningRepository()
+    await cleaning_repo.delete_cleaning(cleaning_id)
+    return {"status": "success"}
