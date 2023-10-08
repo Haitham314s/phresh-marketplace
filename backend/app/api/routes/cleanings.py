@@ -1,6 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
+
+from app.db.repositories.cleanings import CleaningRepository
+from app.models.schemas.cleaning import CleaningBase, CleaningOut
 
 router = APIRouter()
 
@@ -21,3 +24,16 @@ async def get_all_cleanings() -> List[dict]:
             "price_per_hour": 19.99,
         },
     ]
+
+
+@router.post(
+    "/",
+    response_model=CleaningOut,
+    response_model_exclude_none=True,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_new_cleaning(new_cleaning: CleaningBase):
+    cleaning_repo = CleaningRepository()
+    cleaning_out = await cleaning_repo.create_cleaning(new_cleaning)
+    print(f"CLEANING_OUT: {cleaning_out}")
+    return cleaning_out
