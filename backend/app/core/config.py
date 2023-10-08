@@ -14,14 +14,12 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: str
     postgres_db: str
-    test: str = "false"
 
-    model_config = SettingsConfigDict(env_file=".env.test")
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 config = Settings()
 
 
-DB_NAME = f"{config.postgres_db}_test" if config.test == "true" else config.postgres_db
-DATABASE_URL = f"postgres://{config.postgres_user}:{config.postgres_password}@{config.postgres_host}:{config.postgres_port}/{DB_NAME}"
+DATABASE_URL = f"postgres://{config.postgres_user}:{config.postgres_password}@{config.postgres_host}:{config.postgres_port}/{config.postgres_db}"
 print(f"DATABASE_URL: {DATABASE_URL}")

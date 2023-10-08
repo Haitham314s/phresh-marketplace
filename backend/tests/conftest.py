@@ -1,8 +1,12 @@
+from uuid import uuid4
+
 import pytest
 from httpx import AsyncClient
 from tortoise import Tortoise
 
 from app.api.server import app
+from app.db.repositories.cleanings import CleaningRepository
+from app.models.schemas.cleaning import CleaningBase, CleaningOut
 
 # from app.core.config import DATABASE_URL
 
@@ -16,7 +20,7 @@ async def init_db(create_db: bool = False, schemas: bool = False):
     if schemas:
         await Tortoise.generate_schemas()
     if create_db:
-        print(f"database created: {DATABASE_URL}")
+        print(f"Database created: {DATABASE_URL}")
 
 
 async def init():

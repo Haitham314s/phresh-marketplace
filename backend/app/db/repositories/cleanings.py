@@ -8,10 +8,10 @@ from app.models.schemas.cleaning import CleaningBase, CleaningOut
 
 
 class CleaningRepository:
-    async def get_cleanings(self) -> List[CleaningOut]:
+    async def get_all_cleanings(self) -> List[CleaningOut]:
         return await Cleaning.all()
 
-    async def get_cleaning(self, cleaning_id: UUID) -> CleaningOut | None:
+    async def get_cleaning_by_id(self, cleaning_id: UUID) -> CleaningOut | None:
         cleaning = await Cleaning.get_or_none(id=cleaning_id)
         if cleaning is None:
             raise HTTPException(
