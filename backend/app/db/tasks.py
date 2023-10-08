@@ -8,9 +8,7 @@ logger = logging.getLogger(__name__)
 
 async def connect_to_db() -> None:
     try:
-        await Tortoise.init(
-            db_url=DATABASE_URL, models={"models": ["app.models", "aerich.models"]}
-        )
+        await Tortoise.init(db_url=DATABASE_URL, modules={"models": ["app.models"]})
         await Tortoise.generate_schemas()
     except Exception as e:
         logger.warn("--- DB CONNECTION ERROR ---")

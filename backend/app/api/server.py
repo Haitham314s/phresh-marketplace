@@ -1,6 +1,6 @@
 from app.api.routes import router as api_router
 from app.core.config import config
-from app.core.tasks import create_start_app_handler, create_stop_app_handler
+from app.db.tasks import close_db_connection, connect_to_db
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
@@ -15,14 +15,21 @@ def get_application():
         allow_headers=["*"],
     )
 
-    app.add_event_handler("startup", create_start_app_handler)
-    app.add_event_handler("shutdown", create_stop_app_handler)
-
     app.include_router(api_router, prefix="/api")
     return app
 
 
 app = get_application()
+
+
+@app.on_event("startup")
+async def startup_event():
+    await connect_to_db()
+
+
+@app.on_event("shutdown")
+async def startup_event():
+    await close_db_connection()
 
 
 @app.get("/")
