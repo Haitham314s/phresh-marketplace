@@ -5,10 +5,6 @@ from httpx import AsyncClient
 from tortoise import Tortoise
 
 from app.api.server import app
-from app.db.repositories.cleanings import CleaningRepository
-from app.models.schemas.cleaning import CleaningBase, CleaningOut
-
-# from app.core.config import DATABASE_URL
 
 DATABASE_URL = "sqlite://test-db.sqlite"
 

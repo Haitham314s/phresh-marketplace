@@ -14,9 +14,11 @@ class CleaningBase(CoreModel):
     type: CleaningType | None = CleaningType.spot_clean
 
 
-class CleaningUpdateIn(IDModelMixin, CleaningBase):
-    pass
+class CleaningUpdateIn(CleaningBase):
+    name: str | None = None
+    price: float | None = None
+    type: CleaningType | None = None
 
 
 class CleaningOut(CleaningPydanticOut, CoreModel):
-    pass
+    price: float

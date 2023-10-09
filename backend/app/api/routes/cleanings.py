@@ -4,12 +4,12 @@ from uuid import UUID
 from fastapi import APIRouter, status
 
 from app.db.repositories.cleanings import CleaningRepository
-from app.models.schemas.cleaning import CleaningBase, CleaningOut
+from app.models.schemas.cleaning import CleaningBase, CleaningOut, CleaningUpdateIn
 
 router = APIRouter()
 
 
-@router.get("s", response_model=List[CleaningOut], response_model_exclude_none=True)
+@router.get("s", response_model=List[CleaningOut])
 async def get_all_cleanings():
     cleaning_repo = CleaningRepository()
     return await cleaning_repo.get_all_cleanings()
@@ -33,7 +33,13 @@ async def create_new_cleaning(new_cleaning: CleaningBase):
     return await cleaning_repo.create_cleaning(new_cleaning)
 
 
-@router.delete("/{cleaning_id}", response_model=CleaningOut)
+@router.put("/{cleaning_id}", response_model=CleaningOut)
+async def update_cleaning(cleaning_id: UUID, cleaning_in: CleaningUpdateIn):
+    cleaning_repo = CleaningRepository()
+    return await cleaning_repo.update_cleaning(cleaning_id, cleaning_in)
+
+
+@router.delete("/{cleaning_id}")
 async def get_cleaning(cleaning_id: UUID):
     cleaning_repo = CleaningRepository()
     await cleaning_repo.delete_cleaning(cleaning_id)
