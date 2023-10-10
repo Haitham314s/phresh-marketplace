@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     postgres_port: str
     postgres_db: str
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env.test")
 
 
 config = Settings()
