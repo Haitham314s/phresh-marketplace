@@ -5,7 +5,7 @@ from app.models.user import User
 
 from .core import CoreModel, DateTimeModelMixin
 
-# UserPublicPyOut = pydantic_model_creator(User, exclude=("password", "salt"))
+UserPublicPyOut = pydantic_model_creator(User, exclude=("password", "salt"))
 
 
 class UserBase(CoreModel):
@@ -32,5 +32,5 @@ class UserPasswordIn(CoreModel):
     salt: str
 
 
-class UserPublicOut(UserBase, DateTimeModelMixin, CoreModel):
+class UserPublicOut(UserPublicPyOut, DateTimeModelMixin, CoreModel):
     pass

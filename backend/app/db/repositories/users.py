@@ -24,4 +24,4 @@ class UserRepository:
             )
 
         user = await User.create(**new_user.model_dump())
-        return UserPublicOut.model_validate(user)
+        return UserPublicOut.model_validate(user, from_attributes=True)

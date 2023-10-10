@@ -14,7 +14,7 @@ test_new_user = {
 @pytest.mark.anyio
 async def test_routes_exist(client: AsyncClient):
     res = await client.get("/user")
-    assert res.status_code == 404
+    assert res.status_code == 405
 
 
 @pytest.mark.anyio
@@ -24,7 +24,6 @@ async def test_register_user(client: AsyncClient):
     assert user is None
 
     res = await client.post("/user", json=test_new_user)
-    print(res.json())
     assert res.status_code == 201
 
     user = await user_repo.get_user_by_email(test_new_user["email"])
@@ -40,7 +39,7 @@ async def test_register_user(client: AsyncClient):
     "new_user, status_code",
     (
         ({"email": "test@gmail.com"}, 400),
-        ({"username": "test"}, 400),
+        ({"username": "test_username"}, 400),
         ({"email": "invalid_email@one@two.io"}, 422),
         ({"password": "short"}, 422),
         ({"username": "shakira@#$%^<>"}, 422),
