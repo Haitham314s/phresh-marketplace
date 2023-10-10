@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 
-from app.api.routes.cleanings import router as cleanings_router
+from .cleanings import router as cleanings_router
+from .users import router as users_rouer
 
 router = APIRouter()
 
-router.include_router(cleanings_router, prefix="/cleaning", tags=["Cleaningss"])
+router.include_router(cleanings_router, prefix="/cleaning", tags=["Cleanings"])
+router.include_router(users_rouer, prefix="/user", tags=["Users"])

@@ -11,9 +11,9 @@ class User(Model):
     email_verified = fields.BooleanField(default=False, index=True)
 
     salt = fields.TextField(null=True)
-    hashed_password = fields.TextField()
+    hashed_password = fields.TextField(null=True)
 
-    is_active = fields.BooleanField(default=False, index=True)
+    is_active = fields.BooleanField(default=True, index=True)
     is_superuser = fields.BooleanField(default=False)
 
     modified_at = fields.DatetimeField(auto_now=True)
