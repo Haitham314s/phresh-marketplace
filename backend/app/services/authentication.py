@@ -31,10 +31,11 @@ class AuthService:
         hashed_password = self.hash_password(password, salt=salt)
         return UserPasswordOut(salt=salt, password=hashed_password)
 
-    def verify_password(password: str, salt: str, hashed_password: str) -> bool:
-        return pwd_context.verify(password + salt, hashed_password)
+    def verify_password(self, password: str, salt: str, hashed_password: str) -> bool:
+        return pwd_context.verify(f"{password}{salt}", hashed_password)
 
     def create_access_token(
+        self,
         user: UserPublicOut | None,
         secret_key: str = config.secret_key,
         audience: str = config.jwt_audience,

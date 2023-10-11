@@ -48,8 +48,7 @@ async def initialize_tests():
     await Tortoise._drop_databases()
 
 
-@pytest.fixture(scope="session")
-@lru_cache
+@pytest.fixture(scope="session", autouse=True)
 async def test_user():
     new_user = UserCreateIn(email="test@gmail.com", username="test", password="test123")
 

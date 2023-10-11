@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from app.models.schemas.user import UserCreateIn
+from app.models.schemas.user import UserCreateIn, UserPublicOut
 from app.models.user import User
 from app.services import auth_service
 
@@ -31,6 +31,9 @@ class UserRepository:
         user_password = self.auth_service.create_salt_and_hashed_password(
             new_user.password
         )
-        user_object |= user_password.model_dump()
+        user_object |= {
+            "hashed_password": user_password.password,
+            "salt": user_password.salt,
+        }
 
         return await User.create(**user_object)

@@ -45,8 +45,8 @@ async def test_register_user(client: AsyncClient):
 @pytest.mark.parametrize(
     "new_user, status_code",
     (
-        ({"email": "testnewuser@gmail.com"}, 400),
-        ({"username": "test_new_username"}, 400),
+        ({"email": "test@gmail.com"}, 400),
+        ({"username": "test"}, 400),
         ({"email": "invalid_email@one@two.io"}, 422),
         ({"password": "short"}, 422),
         ({"username": "shakira@#$%^<>"}, 422),
@@ -65,7 +65,6 @@ async def test_invalid_user_registration(
     for key, value in new_user.items():
         user_object[key] = value
 
-    print(f"USER_OBJECT: {user_object}")
     res = await client.post("/user", json=user_object)
     assert res.status_code == status_code
 
@@ -86,9 +85,9 @@ async def test_user_password_registration(client: AsyncClient):
     user = await user_repo.get_user_by_email(email=new_user["email"])
     assert user is not None
     assert user.salt is not None and user.salt != "123"
-    assert user.password != new_user["password"]
+    assert user.hashed_password != new_user["password"]
     assert auth_service.verify_password(
-        password=new_user["password"],
+        password=str(new_user["password"]),
         salt=user.salt,
-        hashed_pw=user.password,
+        hashed_password=user.hashed_password,
     )
