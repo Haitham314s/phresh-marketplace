@@ -15,7 +15,7 @@ class Cleaning(Model):
     class Meta:
         table = "cleaning"
 
-    id = fields.UUIDField(pk=True, unique=True, index=True, default=uuid4())
+    id = fields.UUIDField(pk=True, unique=True, index=True, default=uuid4)
     name = fields.CharField(max_length=255, index=True)
     description = fields.TextField(null=True)
     type = fields.CharEnumField(

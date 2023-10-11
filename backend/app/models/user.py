@@ -8,7 +8,7 @@ class User(Model):
     class Meta:
         table = "user"
 
-    id = fields.UUIDField(pk=True, unique=True, index=True, default=uuid4())
+    id = fields.UUIDField(pk=True, unique=True, index=True, default=uuid4)
     username = fields.CharField(max_length=255, index=True)
     email = fields.CharField(max_length=255, index=True)
     email_verified = fields.BooleanField(default=False, index=True)

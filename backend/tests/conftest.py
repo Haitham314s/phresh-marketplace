@@ -1,3 +1,4 @@
+from functools import lru_cache
 from uuid import uuid4
 
 import pytest
@@ -5,6 +6,8 @@ from httpx import AsyncClient
 from tortoise import Tortoise
 
 from app.api.server import app
+from app.db.repositories.users import UserRepository
+from app.models.schemas.user import UserCreateIn
 
 DATABASE_URL = "sqlite://test-db.sqlite"
 
@@ -43,3 +46,16 @@ async def initialize_tests():
     await init()
     yield
     await Tortoise._drop_databases()
+
+
+@pytest.fixture(scope="session")
+@lru_cache
+async def test_user():
+    new_user = UserCreateIn(email="test@gmail.com", username="test", password="test123")
+
+    user_repo = UserRepository()
+    user = await user_repo.get_user_by_email(email=new_user.email)
+    if user is not None:
+        return user
+
+    return await user_repo.register_new_user(new_user)

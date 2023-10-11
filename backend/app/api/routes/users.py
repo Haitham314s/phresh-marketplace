@@ -9,4 +9,5 @@ router = APIRouter()
 @router.post("", response_model=UserPublicOut, status_code=status.HTTP_201_CREATED)
 async def register_new_user(new_user: UserCreateIn):
     user_repo = UserRepository()
-    return await user_repo.register_new_user(new_user)
+    user = await user_repo.register_new_user(new_user)
+    return UserPublicOut.model_validate(user)
