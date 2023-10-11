@@ -2,9 +2,13 @@ from fastapi import HTTPException, status
 
 from app.models.schemas.user import UserCreateIn, UserPublicOut
 from app.models.user import User
+from app.services import auth_service
 
 
 class UserRepository:
+    def __init__(self) -> None:
+        self.auth_service = auth_service
+
     async def get_user_by_email(self, email: str) -> UserPublicOut | None:
         user = await User.get_or_none(email=email)
         return UserPublicOut.model_validate(user) if user is not None else None
@@ -23,5 +27,11 @@ class UserRepository:
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken"
             )
 
-        user = await User.create(**new_user.model_dump())
+        user_object = new_user.model_dump()
+        user_password = self.auth_service.create_salt_and_hashed_password(
+            new_user.password
+        )
+        user_object |= user_password.model_dump()
+
+        user = await User.create(**user_object)
         return UserPublicOut.model_validate(user, from_attributes=True)

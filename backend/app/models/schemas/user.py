@@ -32,5 +32,10 @@ class UserPasswordIn(CoreModel):
     salt: str
 
 
+class UserPasswordOut(CoreModel):
+    password: str
+    salt: str
+
+
 class UserPublicOut(UserPublicPyOut, DateTimeModelMixin, CoreModel):
     pass

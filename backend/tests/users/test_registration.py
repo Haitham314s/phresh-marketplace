@@ -1,8 +1,13 @@
 import pytest
+from faker import Faker
 from httpx import AsyncClient
 
 from app.db.repositories.users import UserRepository
 from app.models.schemas.user import UserPublicOut
+from app.services import auth_service
+
+faker = Faker()
+Faker.seed(0)
 
 test_new_user = {
     "email": "test@gmail.com",
@@ -60,3 +65,27 @@ async def test_invalid_test_registration(
 
     res = await client.post("/user", json=user_object)
     assert res.status_code == status_code
+
+
+@pytest.mark.anyio
+async def test_user_password_registration(client: AsyncClient):
+    user_repo = UserRepository()
+    fake_profile: dict = faker.profile()
+    new_user = {
+        "email": fake_profile["mail"],
+        "username": fake_profile["username"],
+        "password": f"{fake_profile['username']}123",
+    }
+
+    res = await client.post("/user", json=new_user)
+    assert res.status_code == 201
+
+    user = await user_repo.get_user_by_email(email=new_user["email"])
+    assert user is not None
+    assert user.salt is not None and user.salt != "123"
+    assert user.password != new_user["password"]
+    assert auth_service.verify_password(
+        password=new_user["password"],
+        salt=user.salt,
+        hashed_pw=user.password,
+    )
