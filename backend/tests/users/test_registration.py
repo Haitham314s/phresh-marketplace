@@ -38,8 +38,10 @@ async def test_register_user(client: AsyncClient):
     assert user.email == new_user["email"]
     assert user.username == new_user["username"]
 
-    created_user = UserPublicOut(**res.json())
-    assert created_user == UserPublicOut.model_validate(user)
+    created_user = UserPublicOut(**res.json()).model_dump(exclude="access_token")
+    assert created_user == UserPublicOut.model_validate(user).model_dump(
+        exclude="access_token"
+    )
 
 
 @pytest.mark.parametrize(

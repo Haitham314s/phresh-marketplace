@@ -1,6 +1,7 @@
 from pydantic import EmailStr, constr
 from tortoise.contrib.pydantic import pydantic_model_creator
 
+from app.models.schemas.token import AccessToken
 from app.models.user import User
 
 from .core import CoreModel, DateTimeModelMixin
@@ -38,4 +39,4 @@ class UserPasswordOut(CoreModel):
 
 
 class UserPublicOut(UserPublicPyOut, DateTimeModelMixin, CoreModel):
-    pass
+    access_token: AccessToken | None = None
