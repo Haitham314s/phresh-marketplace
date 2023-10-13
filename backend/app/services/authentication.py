@@ -6,7 +6,8 @@ from passlib.context import CryptContext
 
 from app.core.config import config
 from app.models.schemas.token import JWTCreds, JWTMeta, JWTPayload
-from app.models.schemas.user import UserPasswordOut, UserPublicOut
+from app.models.schemas.user import UserPasswordOut
+from app.models.user import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -36,12 +37,12 @@ class AuthService:
 
     def create_access_token(
         self,
-        user: UserPublicOut | None,
+        user: User | None,
         secret_key: str = config.secret_key,
         audience: str = config.jwt_audience,
         expires_in: int = config.access_token_expire_minutes,
     ) -> str:
-        if user is None or not isinstance(user, UserPublicOut):
+        if user is None or not isinstance(user, User):
             return None
 
         jwt_meta = JWTMeta(
