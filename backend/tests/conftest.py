@@ -5,7 +5,6 @@ from tortoise import Tortoise
 from app.api.server import app
 from app.core.config import config
 from app.db.repositories import user_repo
-from app.db.repositories.users import UserRepository
 from app.models import User
 from app.models.schemas.user import UserCreateIn
 from app.services import auth_service
@@ -60,5 +59,5 @@ async def test_user():
 @pytest.fixture(scope="session")
 async def authorized_client(client: AsyncClient, test_user: User):
     access_token = auth_service.create_access_token(test_user, config.secret_key)
-    client.headers = {**client.headers, "Authorizatiion": f"{config.jwt_token_prefix} {access_token}"}
+    client.headers = {**client.headers, "Authorization": f"{config.jwt_token_prefix} {access_token}"}
     return client
