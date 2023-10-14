@@ -2,7 +2,7 @@ from typing import Type
 
 import pytest
 from jose import jwt
-from jose.exceptions import JWKError, JWSError, JWTClaimsError
+from jose.exceptions import JWSError, JWTClaimsError
 from pydantic import ValidationError
 
 from app.core.config import config

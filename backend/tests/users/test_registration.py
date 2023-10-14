@@ -39,9 +39,7 @@ async def test_register_user(client: AsyncClient):
     assert user.username == new_user["username"]
 
     created_user = UserPublicOut(**res.json()).model_dump(exclude="access_token")
-    assert created_user == UserPublicOut.model_validate(user).model_dump(
-        exclude="access_token"
-    )
+    assert created_user == UserPublicOut.model_validate(user).model_dump(exclude="access_token")
 
 
 @pytest.mark.parametrize(
@@ -56,9 +54,7 @@ async def test_register_user(client: AsyncClient):
     ),
 )
 @pytest.mark.anyio
-async def test_invalid_user_registration(
-    client: AsyncClient, new_user: dict, status_code: int
-):
+async def test_invalid_user_registration(client: AsyncClient, new_user: dict, status_code: int):
     user_object = {
         "email": "nottaken@email.io",
         "username": "not_taken_username",

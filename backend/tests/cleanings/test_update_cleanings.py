@@ -24,9 +24,7 @@ from ..shared.cleanings import create_cleaning_info
     ),
 )
 @pytest.mark.anyio
-async def test_valid_update_cleaning_by_id(
-    client: AsyncClient, cleaning_object: Dict[str, Any]
-):
+async def test_valid_update_cleaning_by_id(client: AsyncClient, cleaning_object: Dict[str, Any]):
     test_cleaning = await create_cleaning_info()
     res = await client.put(f"/cleaning/{str(test_cleaning.id)}", json=cleaning_object)
     assert res.status_code == 200

@@ -54,6 +54,4 @@ class AuthService:
         jwt_creds = JWTCreds(sub=user.email, username=user.username)
         token_payload = JWTPayload(**jwt_meta.model_dump(), **jwt_creds.model_dump())
 
-        return jwt.encode(
-            token_payload.model_dump(), secret_key, algorithm=config.jwt_algorithm
-        )
+        return jwt.encode(token_payload.model_dump(), secret_key, algorithm=config.jwt_algorithm)

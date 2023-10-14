@@ -1,21 +1,18 @@
 from datetime import datetime, timedelta
 
-from pydantic import EmailStr
+from pydantic import EmailStr, BaseModel
 
 from app.core.config import config
-from app.models.schemas.core import CoreModel
 
 
-class JWTMeta(CoreModel):
+class JWTMeta(BaseModel):
     iss: str = "phresh.io"
     aud: str = config.jwt_audience
     iat: float = datetime.timestamp(datetime.utcnow())
-    exp: float = datetime.timestamp(
-        datetime.utcnow() + timedelta(minutes=config.access_token_expire_minutes)
-    )
+    exp: float = datetime.timestamp(datetime.utcnow() + timedelta(minutes=config.access_token_expire_minutes))
 
 
-class JWTCreds(CoreModel):
+class JWTCreds(BaseModel):
     sub: EmailStr
     username: str
 
@@ -24,6 +21,6 @@ class JWTPayload(JWTMeta, JWTCreds):
     pass
 
 
-class AccessToken(CoreModel):
+class AccessToken(BaseModel):
     access_token: str
     token_type: str

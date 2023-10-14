@@ -23,6 +23,5 @@ class Settings(BaseSettings):
 
 config = Settings()
 
-
 DATABASE_URL = f"postgres://{config.postgres_user}:{config.postgres_password}@{config.postgres_host}:{config.postgres_port}/{config.postgres_db}"
 print(f"DATABASE_URL: {DATABASE_URL}")

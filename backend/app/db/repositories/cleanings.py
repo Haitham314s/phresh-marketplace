@@ -9,9 +9,7 @@ from app.models.schemas.cleaning import CleaningBase, CleaningOut, CleaningUpdat
 
 class CleaningRepository:
     async def get_all_cleanings(self) -> List[CleaningOut]:
-        return [
-            CleaningOut.model_validate(cleaning) for cleaning in await Cleaning.all()
-        ]
+        return [CleaningOut.model_validate(cleaning) for cleaning in await Cleaning.all()]
 
     async def get_cleaning_by_id(self, cleaning_id: UUID) -> CleaningOut | None:
         cleaning = await Cleaning.get_or_none(id=cleaning_id)
@@ -27,9 +25,7 @@ class CleaningRepository:
         cleaning = await Cleaning.create(**new_cleaning.model_dump())
         return CleaningOut.model_validate(cleaning)
 
-    async def update_cleaning(
-        self, cleaning_id: UUID, cleaning_in: CleaningUpdateIn
-    ) -> CleaningOut:
+    async def update_cleaning(self, cleaning_id: UUID, cleaning_in: CleaningUpdateIn) -> CleaningOut:
         cleaning = await Cleaning.get_or_none(id=cleaning_id)
         if cleaning is None:
             raise HTTPException(

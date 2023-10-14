@@ -18,9 +18,7 @@ class Cleaning(Model):
     id = fields.UUIDField(pk=True, unique=True, index=True, default=uuid4)
     name = fields.CharField(max_length=255, index=True)
     description = fields.TextField(null=True)
-    type = fields.CharEnumField(
-        CleaningType, index=True, default=CleaningType.spot_clean
-    )
+    type = fields.CharEnumField(CleaningType, index=True, default=CleaningType.spot_clean)
     price = fields.DecimalField(max_digits=10, decimal_places=2, index=True)
 
     modified_at = fields.DatetimeField(auto_now=True)

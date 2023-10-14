@@ -4,7 +4,6 @@ import pytest
 from httpx import AsyncClient
 
 from app.models.schemas.cleaning import CleaningOut
-
 from ..shared.cleanings import create_cleaning_info
 
 
@@ -38,8 +37,6 @@ async def test_get_cleaning_by_id(client: AsyncClient):
     ),
 )
 @pytest.mark.anyio
-async def test_get_cleaning_by_wrong_id(
-    client: AsyncClient, cleaning_id: UUID, status_code: int
-):
+async def test_get_cleaning_by_wrong_id(client: AsyncClient, cleaning_id: UUID, status_code: int):
     res = await client.get(f"/cleaning/{cleaning_id}")
     assert res.status_code == status_code

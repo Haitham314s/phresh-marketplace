@@ -28,8 +28,6 @@ async def test_valid_create_cleaning(client: AsyncClient):
     ),
 )
 @pytest.mark.anyio
-async def test_invalid_create_cleaning(
-    client: AsyncClient, invalid_payload: dict | None, status_code: int
-):
+async def test_invalid_create_cleaning(client: AsyncClient, invalid_payload: dict | None, status_code: int):
     res = await client.post("/cleaning", json=invalid_payload)
     assert res.status_code == status_code

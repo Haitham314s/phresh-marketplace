@@ -1,6 +1,3 @@
-from functools import lru_cache
-from uuid import uuid4
-
 import pytest
 from httpx import AsyncClient
 from tortoise import Tortoise
@@ -13,9 +10,7 @@ DATABASE_URL = "sqlite://test-db.sqlite"
 
 
 async def init_db(create_db: bool = False, schemas: bool = False):
-    await Tortoise.init(
-        db_url=DATABASE_URL, modules={"models": ["app.models"]}, _create_db=create_db
-    )
+    await Tortoise.init(db_url=DATABASE_URL, modules={"models": ["app.models"]}, _create_db=create_db)
     if schemas:
         await Tortoise.generate_schemas()
     if create_db:
