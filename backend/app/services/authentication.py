@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta
 
 import bcrypt
+from fastapi import HTTPException, status
 from jose import jwt
+from jose.exceptions import JWTError
 from passlib.context import CryptContext
+from pydantic import ValidationError
 
 from app.core.config import config
 from app.models.schemas.token import JWTCreds, JWTMeta, JWTPayload
@@ -55,3 +58,17 @@ class AuthService:
         token_payload = JWTPayload(**jwt_meta.model_dump(), **jwt_creds.model_dump())
 
         return jwt.encode(token_payload.model_dump(), secret_key, algorithm=config.jwt_algorithm)
+
+    async def get_user_from_token(self, token: str, secret_key: str):
+        try:
+            decoded_token = jwt.decode(
+                token, secret_key, audience=config.jwt_audience, algorithms=[config.jwt_algorithm]
+            )
+            payload = JWTPayload(**decoded_token)
+            return await User.get_or_none(username=payload.username)
+        except (ValidationError, JWTError, AttributeError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate token credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )

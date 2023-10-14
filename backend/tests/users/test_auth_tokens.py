@@ -1,6 +1,8 @@
-from typing import Type
+from typing import Type, Union
 
 import pytest
+from fastapi import HTTPException
+from httpx import AsyncClient
 from jose import jwt
 from jose.exceptions import JWSError, JWTClaimsError
 from pydantic import ValidationError
@@ -73,3 +75,29 @@ async def test_invalid_token_content(
             audience=config.jwt_audience,
             algorithms=[config.jwt_algorithm],
         )
+
+
+@pytest.mark.anyio
+async def test_username_from_token(client: AsyncClient, test_user: User):
+    token = auth_service.create_access_token(test_user, config.secret_key)
+    user = await auth_service.get_user_from_token(token, config.secret_key)
+    assert user.username == test_user.username
+
+
+@pytest.mark.parametrize(
+    "secret, wrong_token",
+    (
+        (config.secret_key, "asdf"),  # use wrong token
+        (config.secret_key, ""),  # use wrong token
+        (config.secret_key, None),  # use wrong token
+        ("ABC123", "use correct token"),  # use wrong secret
+    ),
+)
+@pytest.mark.anyio
+async def test_token_or_secret_error(test_user: User, secret: str, wrong_token: str | None):
+    token = auth_service.create_access_token(test_user, config.secret_key)
+    if wrong_token == "use correct token":
+        wrong_token = token
+
+    with pytest.raises(HTTPException):
+        await auth_service.get_user_from_token(wrong_token, secret)
