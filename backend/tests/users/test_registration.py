@@ -12,8 +12,9 @@ Faker.seed(0)
 
 @pytest.mark.anyio
 async def test_routes_exist(client: AsyncClient):
+    client.headers = {**client.headers, "content-type": "application/json"}
     res = await client.get("/user")
-    assert res.status_code == 405
+    assert res.status_code == 401
 
 
 @pytest.mark.anyio
@@ -22,14 +23,14 @@ async def test_register_user(client: AsyncClient):
     new_user = {
         "email": fake_profile["mail"],
         "username": fake_profile["username"],
-        "password": f"{fake_profile['username']}123",
+        "password": f"{fake_profile['username']}123456",
     }
 
     user = await user_repo.get_user_by_email(new_user["email"])
     assert user is None
 
     res = await client.post("/user", json=new_user)
-    # print(f"RES: {res.json()}")
+    print(f"RES: {res.json()}")
     assert res.status_code == 201
 
     user = await user_repo.get_user_by_email(new_user["email"])

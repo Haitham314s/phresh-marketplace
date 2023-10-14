@@ -4,7 +4,6 @@ from jose import jwt
 
 from app.core.config import config
 from app.models import User
-from app.models.schemas.user import UserPublicOut
 
 
 @pytest.mark.anyio
@@ -50,14 +49,3 @@ async def test_invalid_user_login(client: AsyncClient, test_user: User, form_dat
     res = await client.post("/auth/token", data=login_data)
     assert res.status_code == status_code
     assert "access_token" not in res.json()
-
-
-@pytest.mark.anyio
-async def test_authenticated_user_login(authorized_client: AsyncClient, test_user: User):
-    res = await authorized_client.get("/auth/token")
-    assert res.status_code == 200
-
-    user = UserPublicOut(**res.json())
-    assert user.email == test_user.email
-    assert user.username == test_user.username
-    assert user.id == test_user.id

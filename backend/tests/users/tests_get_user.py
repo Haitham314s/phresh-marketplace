@@ -3,7 +3,19 @@ from httpx import AsyncClient
 
 from app.core.config import config
 from app.models import User
+from app.models.schemas.user import UserPublicOut
 from app.services import auth_service
+
+
+@pytest.mark.anyio
+async def test_get_authenticated_user(authorized_client: AsyncClient, test_user: User):
+    res = await authorized_client.get("/user")
+    assert res.status_code == 200
+
+    user = UserPublicOut(**res.json())
+    assert user.email == test_user.email
+    assert user.username == test_user.username
+    assert user.id == test_user.id
 
 
 @pytest.mark.anyio
