@@ -17,6 +17,11 @@ async def register_new_user(new_user: UserCreateIn):
     return UserPublicOut.model_validate(user)
 
 
+@router.get("/", response_model=UserPublicOut)
+async def get_user():
+    return None
+
+
 @router.post("/token")
 async def login_user(form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm)) -> AccessToken:
     user = await user_repo.authenticate_user(form_data.username, form_data.password)

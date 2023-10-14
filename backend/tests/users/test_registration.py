@@ -2,6 +2,7 @@ import pytest
 from faker import Faker
 from httpx import AsyncClient
 
+from app.db.repositories import user_repo
 from app.db.repositories.users import UserRepository
 from app.models.schemas.user import UserPublicOut
 from app.services import auth_service
@@ -18,7 +19,6 @@ async def test_routes_exist(client: AsyncClient):
 
 @pytest.mark.anyio
 async def test_register_user(client: AsyncClient):
-    user_repo = UserRepository()
     fake_profile: dict = faker.profile()
     new_user = {
         "email": fake_profile["mail"],
@@ -26,11 +26,11 @@ async def test_register_user(client: AsyncClient):
         "password": f"{fake_profile['username']}123",
     }
 
-    user_repo = UserRepository()
     user = await user_repo.get_user_by_email(new_user["email"])
     assert user is None
 
     res = await client.post("/user", json=new_user)
+    # print(f"RES: {res.json()}")
     assert res.status_code == 201
 
     user = await user_repo.get_user_by_email(new_user["email"])
