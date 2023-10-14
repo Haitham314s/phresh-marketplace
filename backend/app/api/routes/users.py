@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends
 
-from app.api.dependencies.auth import get_user
+from app.api.dependencies.auth import get_user, get_current_user
 from app.db.repositories import user_repo
 from app.models import User
 from app.models.schemas.token import AccessToken
@@ -19,5 +19,6 @@ async def register_new_user(new_user: UserCreateIn):
 
 
 @router.get("", response_model=UserPublicOut)
-async def get_user(user: User = Depends(get_user)):
+async def get_user(user: User = Depends(get_current_user)):
+    user.access_token = AccessToken(access_token=auth_service.create_access_token(user=user), token_type="Bearer")
     return UserPublicOut.model_validate(user)

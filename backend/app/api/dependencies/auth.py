@@ -3,9 +3,10 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.core.config import config
 from app.models import User
+from app.models.schemas.token import AccessToken
 from app.services import auth_service
 
-oauth2_scheme = OAuth2PasswordBearer(f"{config.api_prefix}/users/token")
+oauth2_scheme = OAuth2PasswordBearer(f"{config.api_prefix}/auth/token")
 
 
 async def get_user(token: str = Depends(oauth2_scheme)) -> User:

@@ -59,7 +59,7 @@ class AuthService:
 
         return jwt.encode(token_payload.model_dump(), secret_key, algorithm=config.jwt_algorithm)
 
-    async def get_user_froms_token(self, token: str, secret_key: str):
+    async def get_user_from_token(self, token: str, secret_key: str):
         try:
             decoded_token = jwt.decode(
                 token, secret_key, audience=config.jwt_audience, algorithms=[config.jwt_algorithm]
