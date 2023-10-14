@@ -1,9 +1,8 @@
-from app.db.repositories.cleanings import CleaningRepository
+from app.db.repositories import cleaning_repo
 from app.models.schemas.cleaning import CleaningBase, CleaningOut
 
 
 async def create_cleaning_info() -> CleaningOut:
-    cleaning_repo = CleaningRepository()
     cleaning = await cleaning_repo.get_all_cleanings()
     if len(cleaning):
         return CleaningOut.model_validate(cleaning[0])

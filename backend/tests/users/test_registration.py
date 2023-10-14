@@ -3,7 +3,6 @@ from faker import Faker
 from httpx import AsyncClient
 
 from app.db.repositories import user_repo
-from app.db.repositories.users import UserRepository
 from app.models.schemas.user import UserPublicOut
 from app.services import auth_service
 
@@ -69,7 +68,6 @@ async def test_invalid_user_registration(client: AsyncClient, new_user: dict, st
 
 @pytest.mark.anyio
 async def test_user_password_registration(client: AsyncClient):
-    user_repo = UserRepository()
     fake_profile: dict = faker.profile()
     new_user = {
         "email": fake_profile["mail"],

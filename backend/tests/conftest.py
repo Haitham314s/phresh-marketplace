@@ -4,6 +4,7 @@ from tortoise import Tortoise
 
 from app.api.server import app
 from app.core.config import config
+from app.db.repositories import user_repo
 from app.db.repositories.users import UserRepository
 from app.models import User
 from app.models.schemas.user import UserCreateIn
@@ -49,8 +50,6 @@ async def initialize_tests():
 @pytest.fixture(scope="session", autouse=True)
 async def test_user():
     new_user = UserCreateIn(email="test@gmail.com", username="test", password="test123")
-
-    user_repo = UserRepository()
     user = await user_repo.get_user_by_email(email=new_user.email)
     if user is not None:
         return user
