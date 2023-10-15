@@ -4,7 +4,6 @@ from uuid import UUID
 from fastapi import APIRouter, status
 
 from app.db.repositories import cleaning_repo
-from app.db.repositories.cleanings import CleaningRepository
 from app.models.schemas.cleaning import CleaningBase, CleaningOut, CleaningUpdateIn
 
 router = APIRouter()

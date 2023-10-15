@@ -30,16 +30,15 @@ async def test_register_user(client: AsyncClient):
     assert user is None
 
     res = await client.post("/user", json=new_user)
-    print(f"RES: {res.json()}")
     assert res.status_code == 201
 
-    user = await user_repo.get_user_by_email(new_user["email"])
+    user = await user_repo.get_user_by_email(new_user["email"], populate=False)
     assert user is not None
     assert user.email == new_user["email"]
     assert user.username == new_user["username"]
 
-    created_user = UserPublicOut(**res.json()).model_dump(exclude="access_token")
-    assert created_user == UserPublicOut.model_validate(user).model_dump(exclude="access_token")
+    created_user = UserPublicOut(**res.json()).model_dump(exclude={"access_token", "profile"})
+    assert created_user == UserPublicOut.model_validate(user).model_dump(exclude={"access_token", "profile"})
 
 
 @pytest.mark.parametrize(
@@ -79,7 +78,7 @@ async def test_user_password_registration(client: AsyncClient):
     res = await client.post("/user", json=new_user)
     assert res.status_code == 201
 
-    user = await user_repo.get_user_by_email(email=new_user["email"])
+    user = await user_repo.get_user_by_email(email=new_user["email"], populate=False)
     assert user is not None
     assert user.salt is not None and user.salt != "123"
     assert user.hashed_password != new_user["password"]

@@ -46,7 +46,7 @@ class AuthService:
         expires_in: int = config.access_token_expire_minutes,
     ) -> str:
         if user is None or not isinstance(user, User):
-            return None
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found")
 
         jwt_meta = JWTMeta(
             aud=audience,

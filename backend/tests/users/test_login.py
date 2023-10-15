@@ -9,7 +9,7 @@ from app.models import User
 @pytest.mark.anyio
 async def test_user_login(client: AsyncClient, test_user: User):
     client.headers["content-type"] = "application/x-www-form-urlencoded"
-    login_data = {"username": test_user.username, "password": "test123"}
+    login_data = {"username": test_user.username, "password": "test123456"}
 
     res = await client.post("/auth/token", data=login_data)
     assert res.status_code == 200

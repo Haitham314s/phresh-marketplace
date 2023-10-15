@@ -1,4 +1,4 @@
-from typing import Type, Union
+from typing import Type
 
 import pytest
 from fastapi import HTTPException
@@ -34,14 +34,14 @@ async def test_create_access_token(test_user: User) -> None:
 
 @pytest.mark.anyio
 async def test_token_with_invalid_user() -> None:
-    access_token = auth_service.create_access_token(
-        user=None,
-        secret_key=config.secret_key,
-        audience=config.jwt_audience,
-        expires_in=config.access_token_expire_minutes,
-    )
+    with pytest.raises(HTTPException):
+        access_token = auth_service.create_access_token(
+            user=None,
+            secret_key=config.secret_key,
+            audience=config.jwt_audience,
+            expires_in=config.access_token_expire_minutes,
+        )
 
-    with pytest.raises(AttributeError):
         jwt.decode(access_token, config.secret_key, audience=config.jwt_audience)
 
 

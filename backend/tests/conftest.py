@@ -48,7 +48,7 @@ async def initialize_tests():
 
 @pytest.fixture(scope="session", autouse=True)
 async def test_user():
-    new_user = UserCreateIn(email="test@gmail.com", username="test", password="test123")
+    new_user = UserCreateIn(email="test@gmail.com", username="test", password="test123456")
     user = await user_repo.get_user_by_email(email=new_user.email)
     if user is not None:
         return user
@@ -57,7 +57,21 @@ async def test_user():
 
 
 @pytest.fixture(scope="session")
+async def test_user2():
+    user_in = UserCreateIn(email="test2@gmail.com", username="test2", password="test123456")
+
+    user = await user_repo.get_user_by_email(email=user_in.email)
+    if user is None:
+        return await user_repo.register_new_user(user_in)
+    return user
+
+
+@pytest.fixture(scope="session")
 async def authorized_client(client: AsyncClient, test_user: User):
     access_token = auth_service.create_access_token(test_user, config.secret_key)
-    client.headers = {**client.headers, "Authorization": f"{config.jwt_token_prefix} {access_token}"}
-    return client
+    async with AsyncClient(
+        app=app,
+        base_url="http://localhost:8001/api",
+        headers={**client.headers, "Authorization": f"{config.jwt_token_prefix} {access_token}"},
+    ) as client:
+        yield client
