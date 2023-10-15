@@ -59,10 +59,10 @@ async def test_user():
 @pytest.fixture(scope="session")
 async def test_user2():
     user_in = UserCreateIn(email="test2@gmail.com", username="test2", password="test123456")
-
     user = await user_repo.get_user_by_email(email=user_in.email)
     if user is None:
         return await user_repo.register_new_user(user_in)
+
     return user
 
 

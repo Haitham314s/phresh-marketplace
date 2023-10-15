@@ -1,6 +1,7 @@
-from fastapi import HTTPException, status
 from pydantic import EmailStr
 
+from app.core.error import APIException
+from app.core.error_code import ErrorCode
 from app.db.repositories.profiles import ProfileRepository
 from app.models.schemas.profile import ProfileCreateIn
 from app.models.schemas.user import UserCreateIn
@@ -37,9 +38,9 @@ class UserRepository:
 
     async def register_new_user(self, new_user: UserCreateIn) -> User:
         if await self.get_user_by_email(new_user.email) is not None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already taken")
+            raise APIException(ErrorCode.email_already_used)
         if await self.get_user_by_username(new_user.username) is not None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken")
+            raise APIException(ErrorCode.username_already_used)
 
         user_object = new_user.model_dump()
         user_password = self.auth_service.create_salt_and_hashed_password(new_user.password)

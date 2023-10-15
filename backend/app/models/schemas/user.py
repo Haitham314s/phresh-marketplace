@@ -3,7 +3,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 from app.models.schemas.token import AccessToken
 from app.models.user import User
-from .core import CoreModel, DateTimeModelMixin
+from .core import CoreModel
 from .profile import ProfileOut
 
 UserGenOut = pydantic_model_creator(User, exclude=("password", "salt"))
@@ -38,6 +38,6 @@ class UserPasswordOut(CoreModel):
     salt: str
 
 
-class UserPublicOut(UserGenOut, DateTimeModelMixin, CoreModel):
+class UserPublicOut(UserGenOut, CoreModel):
     access_token: AccessToken | None = None
     profile: ProfileOut | None = None

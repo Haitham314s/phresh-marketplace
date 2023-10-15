@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
 
 import bcrypt
-from fastapi import HTTPException, status
 from jose import jwt
 from jose.exceptions import JWTError
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
 from app.core.config import config
+from app.core.error import APIException
+from app.core.error_code import ErrorCode
 from app.models.schemas.token import JWTCreds, JWTMeta, JWTPayload
 from app.models.schemas.user import UserPasswordOut
 from app.models.user import User
@@ -46,7 +47,7 @@ class AuthService:
         expires_in: int = config.access_token_expire_minutes,
     ) -> str:
         if user is None or not isinstance(user, User):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found")
+            raise APIException(ErrorCode.user_not_found)
 
         jwt_meta = JWTMeta(
             aud=audience,
@@ -67,8 +68,4 @@ class AuthService:
             payload = JWTPayload(**decoded_token)
             return await User.get_or_none(username=payload.username)
         except (ValidationError, JWTError, AttributeError):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate token credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+            raise APIException(ErrorCode.invalid_token_credentials)

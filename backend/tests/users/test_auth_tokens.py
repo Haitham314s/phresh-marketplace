@@ -1,13 +1,13 @@
 from typing import Type
 
 import pytest
-from fastapi import HTTPException
 from httpx import AsyncClient
 from jose import jwt
 from jose.exceptions import JWSError, JWTClaimsError
 from pydantic import ValidationError
 
 from app.core.config import config
+from app.core.error import APIException
 from app.models.user import User
 from app.services import auth_service
 
@@ -34,7 +34,7 @@ async def test_create_access_token(test_user: User) -> None:
 
 @pytest.mark.anyio
 async def test_token_with_invalid_user() -> None:
-    with pytest.raises(HTTPException):
+    with pytest.raises(APIException):
         access_token = auth_service.create_access_token(
             user=None,
             secret_key=config.secret_key,
@@ -99,5 +99,5 @@ async def test_token_or_secret_error(test_user: User, secret: str, wrong_token: 
     if wrong_token == "use correct token":
         wrong_token = token
 
-    with pytest.raises(HTTPException):
+    with pytest.raises(APIException):
         await auth_service.get_user_from_token(wrong_token, secret)

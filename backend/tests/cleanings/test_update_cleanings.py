@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 import pytest
 from httpx import AsyncClient
 
+from app.models import User
 from ..shared.cleanings import create_cleaning_info
 
 
@@ -24,9 +25,11 @@ from ..shared.cleanings import create_cleaning_info
     ),
 )
 @pytest.mark.anyio
-async def test_valid_update_cleaning_by_id(client: AsyncClient, cleaning_object: Dict[str, Any]):
-    test_cleaning = await create_cleaning_info()
-    res = await client.put(f"/cleaning/{str(test_cleaning.id)}", json=cleaning_object)
+async def test_valid_update_cleaning_by_id(
+    authorized_client: AsyncClient, cleaning_object: Dict[str, Any], test_user: User
+):
+    test_cleaning = await create_cleaning_info(test_user)
+    res = await authorized_client.put(f"/cleaning/{str(test_cleaning.id)}", json=cleaning_object)
     assert res.status_code == 200
 
     updated_cleaning = res.json()
@@ -48,10 +51,10 @@ async def test_valid_update_cleaning_by_id(client: AsyncClient, cleaning_object:
 )
 @pytest.mark.anyio
 async def test_invalid_update_cleaning(
-    client: AsyncClient,
+    authorized_client: AsyncClient,
     cleaning_id: UUID,
     cleaning_payload: Dict[str, Any] | None,
     status_code: int,
 ):
-    res = await client.put(f"/cleaning/{cleaning_id}", json=cleaning_payload)
+    res = await authorized_client.put(f"/cleaning/{cleaning_id}", json=cleaning_payload)
     assert res.status_code == status_code

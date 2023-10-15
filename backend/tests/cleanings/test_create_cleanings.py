@@ -5,14 +5,15 @@ from app.models.schemas.cleaning import CleaningBase
 
 
 @pytest.mark.anyio
-async def test_valid_create_cleaning(client: AsyncClient):
+async def test_valid_create_cleaning(authorized_client: AsyncClient):
     new_cleaning = {
         "name": "test cleaning",
         "type": "spot_clean",
         "price": 29.99,
     }
 
-    res = await client.post("/cleaning", json=new_cleaning)
+    res = await authorized_client.post("/cleaning", json=new_cleaning)
+    print(f"RES: {res.json()}")
     assert res.status_code == 201
     assert CleaningBase(**new_cleaning) == CleaningBase(**res.json())
 
@@ -28,6 +29,6 @@ async def test_valid_create_cleaning(client: AsyncClient):
     ),
 )
 @pytest.mark.anyio
-async def test_invalid_create_cleaning(client: AsyncClient, invalid_payload: dict | None, status_code: int):
-    res = await client.post("/cleaning", json=invalid_payload)
+async def test_invalid_create_cleaning(authorized_client: AsyncClient, invalid_payload: dict | None, status_code: int):
+    res = await authorized_client.post("/cleaning", json=invalid_payload)
     assert res.status_code == status_code
