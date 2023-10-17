@@ -4,16 +4,21 @@ from uuid import UUID
 from app.core.error import APIException
 from app.core.error_code import ErrorCode
 from app.models import User
-from app.models.cleaning import Cleaning
+from app.models.cleaning import Cleaning, CleaningType
 from app.models.schemas.cleaning import CleaningBase, CleaningOut, CleaningUpdateIn
 
 
 class CleaningRepository:
     async def get_all_cleanings(self, user: User) -> List[CleaningOut]:
-        return [CleaningOut.model_validate(cleaning) for cleaning in await Cleaning.filter(user_id=user.id)]
+        return [
+            CleaningOut.model_validate(cleaning)
+            for cleaning in await Cleaning.filter(user_id=user.id, type__not=CleaningType.deleted).order_by(
+                "-created_at"
+            )
+        ]
 
     async def get_cleaning_by_id(self, cleaning_id: UUID, user: User) -> Cleaning:
-        cleaning = await Cleaning.get_or_none(id=cleaning_id, user_id=user.id)
+        cleaning = await Cleaning.get_or_none(id=cleaning_id, user_id=user.id, type__not=CleaningType.deleted)
         if cleaning is None:
             raise APIException(ErrorCode.cleaning_not_found)
 
@@ -23,7 +28,7 @@ class CleaningRepository:
         return await Cleaning.create(**new_cleaning.model_dump(), user_id=user.id)
 
     async def update_cleaning(self, cleaning_id: UUID, cleaning_in: CleaningUpdateIn, user: User) -> Cleaning:
-        cleaning = await Cleaning.get_or_none(id=cleaning_id)
+        cleaning = await Cleaning.get_or_none(id=cleaning_id, type__not=CleaningType.deleted)
         if cleaning is None:
             raise APIException(ErrorCode.cleaning_not_found)
         if cleaning.user_id != user.id:
@@ -39,7 +44,8 @@ class CleaningRepository:
         cleaning = await Cleaning.get_or_none(id=cleaning_id)
         if cleaning is None:
             raise APIException(ErrorCode.cleaning_not_found)
-        if cleaning.user.id != user.id:
+        if cleaning.user_id != user.id:
             raise APIException(ErrorCode.cleaning_unauthorized_access)
 
-        await cleaning.delete()
+        cleaning.type = CleaningType.deleted
+        await cleaning.save()

@@ -5,7 +5,8 @@ import pytest
 from httpx import AsyncClient
 
 from app.models import User
-from ..shared.cleanings import create_cleaning_info
+from app.models.schemas.cleaning import CleaningUpdateIn
+from ..shared.cleanings import get_or_create_cleaning
 
 
 @pytest.mark.parametrize(
@@ -28,7 +29,7 @@ from ..shared.cleanings import create_cleaning_info
 async def test_valid_update_cleaning_by_id(
     authorized_client: AsyncClient, cleaning_object: Dict[str, Any], test_user: User
 ):
-    test_cleaning = await create_cleaning_info(test_user)
+    test_cleaning = await get_or_create_cleaning(test_user)
     res = await authorized_client.put(f"/cleaning/{str(test_cleaning.id)}", json=cleaning_object)
     assert res.status_code == 200
 
@@ -36,6 +37,14 @@ async def test_valid_update_cleaning_by_id(
     assert updated_cleaning["id"] == str(test_cleaning.id)
     for key, value in cleaning_object.items():
         assert updated_cleaning[key] == value
+
+
+@pytest.mark.anyio
+async def test_unauthorized_update_cleaning(authorized_client: AsyncClient, test_user2: User):
+    cleaning = await get_or_create_cleaning(test_user2)
+    cleaning_in = CleaningUpdateIn.model_validate(cleaning, from_attributes=True).model_dump()
+    res = await authorized_client.put(f"/cleaning/{cleaning.id}", json=cleaning_in)
+    assert res.status_code == 403
 
 
 @pytest.mark.parametrize(

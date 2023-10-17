@@ -13,4 +13,4 @@ class ErrorCode(ErrorCodeBase):
     username_already_used = "username is already used"
 
     cleaning_not_found = "cleaning info not found", st.HTTP_404_NOT_FOUND
-    cleaning_unauthorized_access = "unauthorized cleaning info access", st.HTTP_401_UNAUTHORIZED
+    cleaning_unauthorized_access = "unauthorized cleaning info access", st.HTTP_403_FORBIDDEN

@@ -1,21 +1,32 @@
 import pytest
 from httpx import AsyncClient
 
+from app.models import User
 from app.models.schemas.cleaning import CleaningBase
+from tests.shared.cleanings import new_cleaning
 
 
 @pytest.mark.anyio
-async def test_valid_create_cleaning(authorized_client: AsyncClient):
-    new_cleaning = {
-        "name": "test cleaning",
-        "type": "spot_clean",
-        "price": 29.99,
-    }
+async def test_valid_create_cleaning(authorized_client: AsyncClient, test_user: User):
+    cleaning = await new_cleaning(test_user)
+    cleaning_dict = CleaningBase.model_validate(cleaning, from_attributes=True).model_dump()
 
-    res = await authorized_client.post("/cleaning", json=new_cleaning)
-    print(f"RES: {res.json()}")
+    res = await authorized_client.post("/cleaning", json=cleaning_dict)
+    created_cleaning = CleaningBase(**res.json())
+
     assert res.status_code == 201
-    assert CleaningBase(**new_cleaning) == CleaningBase(**res.json())
+    assert created_cleaning.name == cleaning.name
+    assert created_cleaning.price == cleaning.price
+    assert created_cleaning.type == cleaning.type
+
+
+@pytest.mark.anyio
+async def test_unauthorized_user_access_cleaning_create(client: AsyncClient, test_user: User):
+    cleaning = await new_cleaning(test_user)
+    cleaning_dict = CleaningBase.model_validate(cleaning, from_attributes=True).model_dump()
+
+    res = await client.post("/cleaning", json=cleaning_dict)
+    assert res.status_code == 401
 
 
 @pytest.mark.parametrize(
