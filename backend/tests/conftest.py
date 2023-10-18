@@ -1,3 +1,6 @@
+import asyncio
+from typing import Callable
+
 import pytest
 from httpx import AsyncClient
 from tortoise import Tortoise
@@ -8,6 +11,7 @@ from app.db.repositories import user_repo
 from app.models import User
 from app.models.schemas.user import UserCreateIn
 from app.services import auth_service
+from .helpers import user_fixture_helper
 
 DATABASE_URL = "sqlite://test-db.sqlite"
 
@@ -48,22 +52,26 @@ async def initialize_tests():
 
 @pytest.fixture(scope="session", autouse=True)
 async def test_user():
-    new_user = UserCreateIn(email="test@gmail.com", username="test", password="test123456")
-    user = await user_repo.get_user_by_email(email=new_user.email)
-    if user is not None:
-        return user
-
-    return await user_repo.register_new_user(new_user)
+    user_in = UserCreateIn(email="test@gmail.com", username="test", password="test123456")
+    return await user_fixture_helper(user_in)
 
 
 @pytest.fixture(scope="session")
 async def test_user2():
     user_in = UserCreateIn(email="test2@gmail.com", username="test2", password="test123456")
-    user = await user_repo.get_user_by_email(email=user_in.email)
-    if user is None:
-        return await user_repo.register_new_user(user_in)
+    return await user_fixture_helper(user_in)
 
-    return user
+
+@pytest.fixture(scope="session")
+async def test_users():
+    return await asyncio.gather(
+        *[
+            user_fixture_helper(
+                UserCreateIn(email=f"test{index}@gmail.com", username=f"test{index}", password="test123456")
+            )
+            for index in range(3, 7)
+        ]
+    )
 
 
 @pytest.fixture(scope="session")
@@ -73,5 +81,19 @@ async def authorized_client(client: AsyncClient, test_user: User):
         app=app,
         base_url="http://localhost:8001/api",
         headers={**client.headers, "Authorization": f"{config.jwt_token_prefix} {access_token}"},
-    ) as client:
-        yield client
+    ) as authorized_client:
+        yield authorized_client
+
+
+@pytest.fixture(scope="session")
+def create_authorized_client(client: AsyncClient) -> Callable:
+    def _create_authorized_client(user: User) -> AsyncClient:
+        access_token = auth_service.create_access_token(user, config.secret_key)
+        async with AsyncClient(
+            app=app,
+            base_url="http://localhost:8001/api",
+            headers={**client.headers, "Authorization": f"{config.jwt_token_prefix} {access_token}"},
+        ) as authorized_client:
+            yield authorized_client
+
+    return _create_authorized_client

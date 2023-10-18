@@ -17,8 +17,12 @@ class CleaningRepository:
             )
         ]
 
-    async def get_cleaning_by_id(self, cleaning_id: UUID, user: User) -> Cleaning:
-        cleaning = await Cleaning.get_or_none(id=cleaning_id, user_id=user.id, type__not=CleaningType.deleted)
+    async def get_cleaning_by_id(self, cleaning_id: UUID, user: User | None) -> Cleaning:
+        query = {"id": cleaning_id, "type__not": CleaningType.deleted}
+        if user is not None:
+            query["user_id"] = user.id
+
+        cleaning = await Cleaning.get_or_none(**query)
         if cleaning is None:
             raise APIException(ErrorCode.cleaning_not_found)
 
