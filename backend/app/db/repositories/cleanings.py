@@ -17,7 +17,7 @@ class CleaningRepository:
             )
         ]
 
-    async def get_cleaning_by_id(self, cleaning_id: UUID, user: User | None) -> Cleaning:
+    async def get_cleaning_by_id(self, cleaning_id: UUID, user: User | None = None) -> Cleaning:
         query = {"id": cleaning_id, "type__not": CleaningType.deleted}
         if user is not None:
             query["user_id"] = user.id

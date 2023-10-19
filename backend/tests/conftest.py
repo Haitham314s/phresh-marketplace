@@ -56,13 +56,13 @@ async def test_user():
     return await user_fixture_helper(user_in)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 async def test_user2():
     user_in = UserCreateIn(email="test2@gmail.com", username="test2", password="test123456")
     return await user_fixture_helper(user_in)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 async def test_users():
     return await asyncio.gather(
         *[
@@ -87,13 +87,13 @@ async def authorized_client(client: AsyncClient, test_user: User):
 
 @pytest.fixture(scope="session")
 def create_authorized_client(client: AsyncClient) -> Callable:
-    async def _create_authorized_client(user: User) -> AsyncClient:
+    def _create_authorized_client(user: User) -> AsyncClient:
         access_token = auth_service.create_access_token(user, config.secret_key)
-        async with AsyncClient(
+        authorized_client = AsyncClient(
             app=app,
             base_url="http://localhost:8001/api",
             headers={**client.headers, "Authorization": f"{config.jwt_token_prefix} {access_token}"},
-        ) as authorized_client:
-            yield authorized_client
+        )
+        return authorized_client
 
     return _create_authorized_client

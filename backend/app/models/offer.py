@@ -13,6 +13,7 @@ class OfferStatus(str, Enum):
     pending = "pending"
     rejected = "rejected"
     cancelled = "cancelled"
+    deleted = "deleted"
 
 
 class Offer(Model):

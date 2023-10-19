@@ -6,34 +6,38 @@ from fastapi import status
 from httpx import AsyncClient
 
 from app.models import User
-from app.models.schemas.offer import OfferOut
+from app.models.schemas.offer import OfferBase
 from tests.shared.cleanings import new_cleaning, get_or_create_cleaning
 
 
+@pytest.mark.anyio
 async def test_user_create_offer(
     create_authorized_client: Callable,
+    test_user: User,
     test_users: list[User],
 ):
     user = test_users[0]
     authorized_client = create_authorized_client(user)
-    cleaning = await new_cleaning(test_users[0])
+    cleaning = await new_cleaning(test_user)
 
     res = await authorized_client.post(f"/cleaning/{cleaning.id}/offer")
     assert res.status_code == status.HTTP_201_CREATED
 
-    offer = OfferOut(**res.json())
+    offer = OfferBase(**res.json())
     assert offer.user_id == user.id
     assert offer.cleaning_id == cleaning.id
     assert offer.status == "pending"
 
 
+@pytest.mark.anyio
 async def test_user_create_duplicate_offers(
     create_authorized_client: Callable,
+    test_user: User,
     test_users: list[User],
 ) -> None:
     user = test_users[1]
     authorized_client = create_authorized_client(user)
-    cleaning = await new_cleaning(user)
+    cleaning = await new_cleaning(test_user)
 
     res = await authorized_client.post(f"/cleaning/{cleaning.id}/offer")
     assert res.status_code == status.HTTP_201_CREATED
@@ -42,6 +46,7 @@ async def test_user_create_duplicate_offers(
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
+@pytest.mark.anyio
 async def test_user_create_own_cleaning_offer(
     authorized_client: AsyncClient,
     test_user: User,
@@ -51,6 +56,7 @@ async def test_user_create_own_cleaning_offer(
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
+@pytest.mark.anyio
 async def test_unauthenticated_user_create_offers(client: AsyncClient, test_user: User):
     cleaning = await new_cleaning(test_user)
     res = await client.post(f"/cleaning/{cleaning.id}/offer")
@@ -65,6 +71,7 @@ async def test_unauthenticated_user_create_offers(client: AsyncClient, test_user
         (None, 422),
     ),
 )
+@pytest.mark.anyio
 async def test_wrong_id_gives_proper_error_status(
     create_authorized_client: Callable,
     test_users: list[User],
