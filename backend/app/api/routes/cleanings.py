@@ -4,9 +4,10 @@ from uuid import UUID
 from fastapi import APIRouter, status, Depends
 
 from app.api.dependencies.auth import get_current_user
+from app.api.dependencies.cleanings import get_cleaning_by_id
 from app.core.response import SUCCESS_RESPONSE
 from app.db.repositories import cleaning_repo
-from app.models import User
+from app.models import User, Cleaning
 from app.models.schemas.cleaning import CleaningBase, CleaningOut, CleaningUpdateIn
 
 router = APIRouter()
@@ -18,8 +19,7 @@ async def get_all_cleanings(user: User = Depends(get_current_user)):
 
 
 @router.get("/{cleaning_id}", response_model=CleaningOut)
-async def get_cleaning(cleaning_id: UUID, user: User = Depends(get_current_user)):
-    cleaning = await cleaning_repo.get_cleaning_by_id(cleaning_id, user)
+async def get_cleaning(cleaning: Cleaning = Depends(get_cleaning_by_id)):
     return CleaningOut.model_validate(cleaning)
 
 

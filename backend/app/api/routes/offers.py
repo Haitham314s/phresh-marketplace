@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.auth import get_current_user
 from app.core.error import APIException
 from app.core.error_code import ErrorCode
-from app.db.repositories import cleaning_repo
+from app.db.repositories import cleaning_repo, offer_repo
 from app.models import User
 from app.models.schemas.offer import OfferBase
 
@@ -18,7 +18,7 @@ async def create_offer(cleaning_id: UUID, user: User = Depends(get_current_user)
     if cleaning is None:
         raise APIException(ErrorCode.cleaning_not_found)
     if cleaning.user_id == user.id:
-        raise APIException(ErrorCode.offer_not_allowed)
+        raise APIException(ErrorCode.offer_method_not_allowed)
 
     offer_in = OfferBase(user_id=cleaning.user_id, cleaning_id=cleaning.id)
     return await offer_repo.create_cleaning_offer(offer_in)

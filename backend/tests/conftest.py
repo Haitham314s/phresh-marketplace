@@ -87,7 +87,7 @@ async def authorized_client(client: AsyncClient, test_user: User):
 
 @pytest.fixture(scope="session")
 def create_authorized_client(client: AsyncClient) -> Callable:
-    def _create_authorized_client(user: User) -> AsyncClient:
+    async def _create_authorized_client(user: User) -> AsyncClient:
         access_token = auth_service.create_access_token(user, config.secret_key)
         async with AsyncClient(
             app=app,

@@ -3,16 +3,17 @@ from fastapi import status as st
 
 
 class ErrorCode(ErrorCodeBase):
-    invalid_token_credentials = "invalid token credentials", st.HTTP_401_UNAUTHORIZED
-    unsuccessful_authentication = "authentication is unsuccessful", st.HTTP_401_UNAUTHORIZED
+    invalid_token_credentials = "Invalid token credentials", st.HTTP_401_UNAUTHORIZED
+    unsuccessful_authentication = "Authentication is unsuccessful", st.HTTP_401_UNAUTHORIZED
 
-    user_not_found = "user not found", st.HTTP_404_NOT_FOUND
-    user_not_active = "user not active", st.HTTP_401_UNAUTHORIZED
+    user_not_found = "User not found", st.HTTP_404_NOT_FOUND
+    user_not_active = "Eser not active", st.HTTP_401_UNAUTHORIZED
 
-    email_already_used = "email is already used"
-    username_already_used = "username is already used"
+    email_already_used = "Email is already used"
+    username_already_used = "Username is already used"
 
-    cleaning_not_found = "cleaning info not found", st.HTTP_404_NOT_FOUND
-    cleaning_unauthorized_access = "unauthorized cleaning info access", st.HTTP_403_FORBIDDEN
+    cleaning_not_found = "Cleaning info not found", st.HTTP_404_NOT_FOUND
+    cleaning_unauthorized_access = "Unauthorized cleaning info access", st.HTTP_403_FORBIDDEN
 
-    offer_not_allowed = "offer method not allowed"
+    offer_method_not_allowed = "Offer method not allowed"
+    offer_already_created = "Offer is already created"
