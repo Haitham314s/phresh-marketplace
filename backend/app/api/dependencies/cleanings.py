@@ -15,8 +15,3 @@ async def get_cleaning_by_id(cleaning_id: UUID, user: User = Depends(get_current
         raise APIException(ErrorCode.cleaning_not_found)
 
     return cleaning
-
-
-def check_cleaning_permission(user: User = Depends(get_current_user), cleaning: Cleaning = Depends(get_cleaning_by_id)):
-    if cleaning.user_id != user.id:
-        raise APIException(ErrorCode.cleaning_unauthorized_access)
