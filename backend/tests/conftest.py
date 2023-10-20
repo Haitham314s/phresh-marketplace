@@ -7,7 +7,6 @@ from tortoise import Tortoise
 
 from app.api.server import app
 from app.core.config import config
-from app.db.repositories import user_repo
 from app.models import User
 from app.models.schemas.user import UserCreateIn
 from app.services import auth_service

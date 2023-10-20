@@ -1,5 +1,6 @@
-from app.core.error import ErrorCodeBase
 from fastapi import status as st
+
+from app.core.error import ErrorCodeBase
 
 
 class ErrorCode(ErrorCodeBase):
@@ -17,3 +18,4 @@ class ErrorCode(ErrorCodeBase):
 
     offer_method_not_allowed = "Offer method not allowed"
     offer_already_created = "Offer is already created"
+    offer_unauthorized_access = "Unauthorized access to this offer", st.HTTP_403_FORBIDDEN

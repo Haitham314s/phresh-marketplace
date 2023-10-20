@@ -1,5 +1,3 @@
-from pydantic import ValidationError
-
 from app.models import Profile
 from app.models import User
 from app.models.schemas.profile import ProfileCreateIn, ProfileUpdateIn, ProfileOut

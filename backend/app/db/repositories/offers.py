@@ -15,6 +15,11 @@ class OfferRepository:
 
         return await Offer.create(**offer_in.model_dump())
 
-    async def get_cleaning_offers(self, cleaning_id: UUID, user: User):
-        await CleaningRepository().get_cleaning_by_id(cleaning_id, user)
+    async def get_cleaning_offers(self, cleaning_id: UUID) -> list[Offer]:
         return await Offer.filter(cleaning_id=cleaning_id, status__not=OfferStatus.deleted)
+
+    async def get_cleaning_offer_by_id(self, offer_id: UUID, populate: bool = True) -> Offer:
+        offer = await Offer.get_or_none(id=offer_id, status__not=OfferStatus.deleted)
+        if populate:
+            await offer.fetch_related("cleaning", "user")
+        return offer

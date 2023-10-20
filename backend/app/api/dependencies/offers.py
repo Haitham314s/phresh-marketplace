@@ -7,8 +7,17 @@ from app.core.error_code import ErrorCode
 from app.models import User, Cleaning
 
 
-async def check_offer_permission(
+async def check_create_offer_permission(
     user: User = Depends(get_current_user), cleaning: Cleaning = Depends(get_cleaning_by_id)
 ):
     if cleaning.user_id == user.id:
         raise APIException(ErrorCode.offer_method_not_allowed)
+
+
+async def check_get_offer_permission(
+    cleaning: Cleaning = Depends(get_cleaning_by_id), user: User = Depends(get_current_user)
+):
+    if cleaning.user_id != user.id:
+        raise APIException(ErrorCode.offer_unauthorized_access)
+
+    return cleaning

@@ -2,9 +2,9 @@ from fastapi import APIRouter
 
 from .auth import router as auth_router
 from .cleanings import router as cleanings_router
+from .offers import router as offers_router
 from .profiles import router as profile_router
 from .users import router as users_router
-from .offers import router as offers_router
 
 router = APIRouter()
 

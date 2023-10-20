@@ -16,6 +16,6 @@ class OfferUpdateIn(OfferBase):
     status: OfferStatus
 
 
-class OfferOut(CoreModel):
+class OfferDetailOut(CoreModel):
     user: UserPublicOut
     cleaning: CleaningOut

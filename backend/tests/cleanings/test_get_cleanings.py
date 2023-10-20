@@ -29,7 +29,7 @@ async def test_get_cleaning_by_id(authorized_client: AsyncClient, test_user: Use
 
 
 @pytest.mark.anyio
-async def test_unauthorized_user_access_cleaning_get(client: AsyncClient, test_user: User):
+async def test_unauthorized_user_cleaning_access(client: AsyncClient, test_user: User):
     res = await client.get(f"/cleaning/{uuid4()}")
     assert res.status_code == 401
 
