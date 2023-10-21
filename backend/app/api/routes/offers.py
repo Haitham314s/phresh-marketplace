@@ -7,7 +7,7 @@ from app.api.dependencies.cleanings import get_cleaning_by_id
 from app.api.dependencies.offers import check_create_offer_permission, check_get_offer_permission
 from app.db.repositories import offer_repo
 from app.models import User, Cleaning
-from app.models.schemas.offer import OfferBase, OfferDetailOut
+from app.models.schemas.offer import OfferBase, OfferDetailOut, OfferUpdateIn
 
 router = APIRouter()
 
@@ -35,13 +35,17 @@ async def list_cleaning_offers(cleaning: Cleaning = Depends(check_get_offer_perm
     dependencies=[Depends(check_get_offer_permission), Depends(get_current_user)],
 )
 async def get_offer(offer_id: UUID):
-    cleaning_offers = await offer_repo.get_cleaning_offer(offer_id)
+    cleaning_offers = await offer_repo.get_cleaning_offer_by_id(offer_id)
     return OfferDetailOut.model_validate(cleaning_offers)
 
 
-@router.put("")
-async def update_offer_state():
-    pass
+@router.put("/{offer_id}", response_model=OfferDetailOut)
+async def update_offer_state(
+    offer_id: UUID, offer_in: OfferUpdateIn, cleaning: Cleaning = Depends(check_get_offer_permission)
+):
+    offer_in = OfferUpdateIn(status=offer_in.status, cleaning_id=cleaning.id)
+    offer = await offer_repo.update_cleaning_offer(offer_id, offer_in)
+    return OfferDetailOut.model_validate(offer, from_attributes=True)
 
 
 @router.delete("")

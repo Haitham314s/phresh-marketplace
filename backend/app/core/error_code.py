@@ -19,3 +19,4 @@ class ErrorCode(ErrorCodeBase):
     offer_method_not_allowed = "Offer method not allowed"
     offer_already_created = "Offer is already created"
     offer_unauthorized_access = "Unauthorized access to this offer", st.HTTP_403_FORBIDDEN
+    offer_not_found = "Offer not found", st.HTTP_404_NOT_FOUND

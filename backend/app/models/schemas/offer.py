@@ -12,10 +12,12 @@ class OfferBase(CoreModel):
     status: OfferStatus | None = OfferStatus.pending
 
 
-class OfferUpdateIn(OfferBase):
+class OfferUpdateIn(CoreModel):
+    cleaning_id: UUID | None = None
     status: OfferStatus
 
 
 class OfferDetailOut(CoreModel):
     user: UserPublicOut
     cleaning: CleaningOut
+    status: OfferStatus | None = OfferStatus.pending
