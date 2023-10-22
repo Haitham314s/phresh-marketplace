@@ -2,12 +2,12 @@ from uuid import UUID
 
 from fastapi import Depends
 
-from app.api.dependencies.auth import get_current_user
-from app.api.dependencies.cleanings import get_cleaning_by_id
 from app.core.error import APIException
 from app.core.error_code import ErrorCode
 from app.db.repositories import offer_repo
 from app.models import User, Cleaning, Offer
+from .auth import get_current_user
+from .cleanings import get_cleaning_by_id
 
 
 async def check_create_offer_permission(

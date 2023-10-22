@@ -13,10 +13,14 @@ class OfferStatus(str, Enum):
     pending = "pending"
     rejected = "rejected"
     cancelled = "cancelled"
+    completed = "completed"
     deleted = "deleted"
 
 
 class Offer(Model):
+    class Meta:
+        table = "offer"
+
     id = fields.UUIDField(pk=True, unique=True, default=uuid4)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="offer_for_user", on_delete=fields.CASCADE, index=True

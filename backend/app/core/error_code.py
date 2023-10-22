@@ -22,4 +22,6 @@ class ErrorCode(ErrorCodeBase):
     offer_not_found = "Offer not found", st.HTTP_404_NOT_FOUND
     offer_has_wrong_status = "Offer has wrong status"
 
+    evaluation_unauthorized_access = "Evaluation unauthorized access", st.HTTP_401_UNAUTHORIZED
+
     system_not_implemented = "Systemm not implemented"
