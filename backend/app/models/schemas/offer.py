@@ -13,6 +13,7 @@ class OfferBase(CoreModel):
 
 
 class OfferUpdateIn(CoreModel):
+    user_id: UUID | None = None
     cleaning_id: UUID | None = None
     status: OfferStatus
 

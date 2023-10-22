@@ -30,6 +30,6 @@ async def new_accepted_cleaning_offer(user: User, users: list[User]) -> Cleaning
     cleaning_offers = await offer_repo.get_cleaning_offers(cleaning.id)
     offer = [offer for offer in cleaning_offers if offer.user_id == users[0].id][0]
 
-    offer_in = OfferUpdateIn(status=OfferStatus.accepted, cleaning_id=cleaning.id)
+    offer_in = OfferUpdateIn(status=OfferStatus.accepted, cleaning_id=cleaning.id, user_id=user.id)
     await offer_repo.update_cleaning_offer(offer.id, offer_in)
     return cleaning
