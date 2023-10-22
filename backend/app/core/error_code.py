@@ -20,5 +20,6 @@ class ErrorCode(ErrorCodeBase):
     offer_already_created = "Offer is already created"
     offer_unauthorized_access = "Unauthorized access to this offer", st.HTTP_403_FORBIDDEN
     offer_not_found = "Offer not found", st.HTTP_404_NOT_FOUND
+    offer_has_wrong_status = "Offer has wrong status"
 
     system_not_implemented = "Systemm not implemented"

@@ -80,8 +80,11 @@ class OfferRepository:
         raise APIException(ErrorCode.system_not_implemented)
 
     async def delete_cleaning_offer_by_id(self, offer_id: UUID):
-        offer_query = Offer.filter(id=offer_id, status__not=OfferStatus.deleted)
-        if await offer_query.count() == 0:
+        offer = await Offer.get_or_none(id=offer_id, status__not=OfferStatus.deleted)
+        if offer is None:
             raise APIException(ErrorCode.offer_not_found)
+        if offer.status != OfferStatus.pending:
+            raise APIException(ErrorCode.offer_has_wrong_status)
 
-        await offer_query.update(status=OfferStatus.deleted)
+        offer.status = OfferStatus.deleted
+        await offer.save()

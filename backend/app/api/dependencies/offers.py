@@ -39,3 +39,11 @@ async def check_update_offer_permission(
         raise APIException(ErrorCode.offer_method_not_allowed)
 
     return cleaning
+
+
+async def check_delete_offer_permission(
+    offer: Offer = Depends(get_offer_by_id),
+    user: User = Depends(get_current_user),
+) -> None:
+    if user.id != offer.user_id:
+        raise APIException(ErrorCode.offer_unauthorized_access)

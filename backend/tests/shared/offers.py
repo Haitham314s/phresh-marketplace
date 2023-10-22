@@ -25,7 +25,7 @@ async def new_cleaning_with_offers(user: User, users: list[User]) -> Cleaning:
     return cleaning
 
 
-async def new_accepted_cleaning_offer(user: User, users: list[User]) -> Cleaning:
+async def new_cleaning_with_accepted_offer(user: User, users: list[User]) -> Cleaning:
     cleaning = await new_cleaning_with_offers(user, users)
     cleaning_offers = await offer_repo.get_cleaning_offers(cleaning.id)
     offer = [offer for offer in cleaning_offers if offer.user_id == users[0].id][0]

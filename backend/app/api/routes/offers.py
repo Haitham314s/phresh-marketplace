@@ -8,10 +8,11 @@ from app.api.dependencies.offers import (
     check_create_offer_permission,
     check_get_offer_permission,
     check_update_offer_permission,
+    check_delete_offer_permission,
 )
 from app.core.response import SUCCESS_RESPONSE
 from app.db.repositories import offer_repo
-from app.models import User, Cleaning, Offer
+from app.models import User, Cleaning
 from app.models.schemas.offer import OfferBase, OfferDetailOut, OfferUpdateIn
 
 router = APIRouter()
@@ -56,7 +57,7 @@ async def update_offer_state(
     return OfferDetailOut.model_validate(offer, from_attributes=True)
 
 
-@router.delete("/{offer_id}", dependencies=[Depends(check_create_offer_permission)])
-async def delete_offer(offer_id: UUID):
+@router.delete("/{offer_id}", dependencies=[Depends(check_delete_offer_permission)])
+async def rescind_offer(offer_id: UUID):
     await offer_repo.delete_cleaning_offer_by_id(offer_id)
     return SUCCESS_RESPONSE
