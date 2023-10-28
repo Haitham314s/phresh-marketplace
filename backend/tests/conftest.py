@@ -11,6 +11,7 @@ from app.models import User
 from app.models.schemas.user import UserCreateIn
 from app.services import auth_service
 from .helpers import user_fixture_helper
+from .shared.evaluations import new_evaluated_cleaning_list
 
 DATABASE_URL = "sqlite://test-db.sqlite"
 
@@ -96,3 +97,8 @@ def create_authorized_client(client: AsyncClient) -> Callable:
         return authorized_client
 
     return _create_authorized_client
+
+
+@pytest.fixture(scope="session")
+async def test_evaluated_cleanings(test_user2: User, test_users: list[User]):
+    return await new_evaluated_cleaning_list(test_user2, test_users[0])

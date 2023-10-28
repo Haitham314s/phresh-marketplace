@@ -30,7 +30,7 @@ class CleanerEvaluationBase(CoreModel):
 
 
 class CleanerEvaluationOut(CleanerEvaluationGenOut, CoreModel):
-    user: UserPublicOut | None = None
+    overall_rating: float
     cleaner: UserPublicOut | None = None
     cleaning: CleaningOut | None = None
 
@@ -40,8 +40,8 @@ class CleanerEvaluationAggregateOut(CoreModel):
     avg_completeness: confloat(ge=0, le=5)
     avg_efficiency: confloat(ge=0, le=5)
     avg_overall_rating: confloat(ge=0, le=5)
-    max_overall_rating: conint(ge=0, le=5)
-    min_overall_rating: conint(ge=0, le=5)
+    max_overall_rating: confloat(ge=0, le=5)
+    min_overall_rating: confloat(ge=0, le=5)
     one_stars: conint(ge=0)
     two_stars: conint(ge=0)
     three_stars: conint(ge=0)

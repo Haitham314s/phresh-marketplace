@@ -41,8 +41,8 @@ async def list_cleaning_offers(cleaning: Cleaning = Depends(check_get_offer_perm
     dependencies=[Depends(check_get_offer_permission), Depends(get_current_user)],
 )
 async def get_offer(offer_id: UUID):
-    cleaning_offers = await offer_repo.get_cleaning_offer_by_id(offer_id)
-    return OfferDetailOut.model_validate(cleaning_offers)
+    cleaning_offer = await offer_repo.get_cleaning_offer_by_id(offer_id)
+    return OfferDetailOut.model_validate(cleaning_offer, from_attributes=True)
 
 
 @router.put("/{offer_id}", response_model=OfferDetailOut)

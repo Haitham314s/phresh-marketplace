@@ -23,5 +23,7 @@ class ErrorCode(ErrorCodeBase):
     offer_has_wrong_status = "Offer has wrong status"
 
     evaluation_unauthorized_access = "Evaluation unauthorized access", st.HTTP_401_UNAUTHORIZED
+    evaluation_already_created = "Evaluation review already created"
+    evaluation_not_found = "Evaluation not found"
 
     system_not_implemented = "Systemm not implemented"

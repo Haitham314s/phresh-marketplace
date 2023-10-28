@@ -43,7 +43,7 @@ Though the cleaner took their time, I would definitely hire them again for the q
     evaluation = CleanerEvaluationOut(**res.json())
     assert evaluation.hidden == evaluation_in.hidden
     assert evaluation.headline == evaluation_in.headline
-    assert evaluation.overall_rating == evaluation_in.overall_rating
+    assert float(evaluation.overall_rating) == evaluation_in.overall_rating
 
     res = await authorized_client.get(f"/cleaning/{cleaning.id}/offer/{offer.id}")
     assert res.status_code == status.HTTP_200_OK
