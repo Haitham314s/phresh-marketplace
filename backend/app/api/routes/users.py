@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Depends
 
 from app.api.dependencies.auth import get_current_user
-from app.db.repositories import user_repo
+from app.db.repositories import user_repo, profile_repo
 from app.models import User
 from app.models.schemas.token import AccessToken
 from app.models.schemas.user import UserCreateIn, UserPublicOut
@@ -20,4 +20,5 @@ async def register_new_user(new_user: UserCreateIn):
 @router.get("", response_model=UserPublicOut)
 async def get_user(user: User = Depends(get_current_user)):
     user.access_token = AccessToken(access_token=auth_service.create_access_token(user=user), token_type="Bearer")
+    user.profile = await profile_repo.get_user_profile(user)
     return UserPublicOut.model_validate(user)

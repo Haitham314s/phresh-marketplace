@@ -5,7 +5,7 @@ from app.models.schemas.profile import ProfileCreateIn, ProfileUpdateIn, Profile
 
 class ProfileRepository:
     async def get_user_profile(self, user: User) -> Profile:
-        return await Profile.get_or_none(user_id=user.id)
+        return (await Profile.get_or_create(user_id=user.id))[0]
 
     async def create_user_profile(self, profile_in: ProfileCreateIn) -> Profile:
         profile_dict = {

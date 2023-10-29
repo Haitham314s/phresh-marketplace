@@ -56,7 +56,7 @@ function Navbar({ user, logUserOut, ...props }) {
       {user?.profile ? (
         <EuiAvatar
           size="l"
-          name={user.profile.full_name || user.username || "Anonymous"}
+          name={user.profile?.fullName || user.username || "Anonymous"}
           initialsLength={2}
           imageUrl={user.profile.image}
         />
@@ -75,9 +75,9 @@ function Navbar({ user, logUserOut, ...props }) {
       <AvatarMenu>
         <EuiAvatar
           size="xl"
-          name={user.profile.full_name || user.username || "Anonymous"}
+          name={user.profile?.fullName || user.username || "Anonymous"}
           initialsLength={2}
-          imageUrl={user.profile.image}
+          imageUrl={user.profile?.image}
         />
         <EuiFlexGroup direction="column" className="avatar-actions">
           <EuiFlexItem grow={1}>
@@ -115,7 +115,7 @@ function Navbar({ user, logUserOut, ...props }) {
               Find Cleaners
             </EuiHeaderLink>
 
-            <EuiHeaderLink iconType="tag" href="#">
+            <EuiHeaderLink iconType="tag" onClick={() => navigate("/cleaning-jobs")}>
               Find Jobs
             </EuiHeaderLink>
 
