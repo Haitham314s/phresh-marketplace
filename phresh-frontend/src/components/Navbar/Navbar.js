@@ -14,8 +14,9 @@ import {
 } from "@elastic/eui"
 import React from "react"
 import { connect } from "react-redux"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
+
 import loginIcon from "../../assets/img/loginIcon.svg"
 import { Actions as authActions } from "../../redux/auth"
 
@@ -35,6 +36,7 @@ const AvatarMenu = styled.div`
 
 function Navbar({ user, logUserOut, ...props }) {
   const [avatarMenuOpen, setAvatarMenuOpen] = React.useState(false)
+  const navigate = useNavigate()
 
   const toggleAvatarMenu = () => setAvatarMenuOpen(!avatarMenuOpen)
 
@@ -43,6 +45,7 @@ function Navbar({ user, logUserOut, ...props }) {
   const handleLogout = () => {
     closeAvatarMenu()
     logUserOut()
+    navigate("/")
   }
 
   const avatarButton = (
@@ -53,7 +56,7 @@ function Navbar({ user, logUserOut, ...props }) {
       {user?.profile ? (
         <EuiAvatar
           size="l"
-          name={user.profile.full_name || "Anonymous"}
+          name={user.profile.full_name || user.username || "Anonymous"}
           initialsLength={2}
           imageUrl={user.profile.image}
         />
@@ -72,7 +75,7 @@ function Navbar({ user, logUserOut, ...props }) {
       <AvatarMenu>
         <EuiAvatar
           size="xl"
-          name={user.profile.full_name || "Anonymous"}
+          name={user.profile.full_name || user.username || "Anonymous"}
           initialsLength={2}
           imageUrl={user.profile.image}
         />
