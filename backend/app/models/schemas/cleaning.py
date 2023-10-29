@@ -3,7 +3,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 from app.models.cleaning import Cleaning, CleaningType
 from .core import CoreModel
 
-CleaningPydanticOut = pydantic_model_creator(Cleaning)
+CleaningPydanticOut = pydantic_model_creator(Cleaning, exclude=("created_at", "modified_at"))
 
 
 class CleaningBase(CoreModel):

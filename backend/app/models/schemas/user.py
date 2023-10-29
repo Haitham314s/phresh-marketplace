@@ -6,7 +6,7 @@ from app.models.user import User
 from .core import CoreModel
 from .profile import ProfileOut
 
-UserGenOut = pydantic_model_creator(User, exclude=("password", "salt"))
+UserGenOut = pydantic_model_creator(User, exclude=("salt", "hashed_password", "created_at", "modified_at"))
 
 
 class UserBase(CoreModel):
@@ -39,5 +39,4 @@ class UserPasswordOut(CoreModel):
 
 
 class UserPublicOut(UserGenOut, CoreModel):
-    access_token: AccessToken | None = None
     profile: ProfileOut | None = None

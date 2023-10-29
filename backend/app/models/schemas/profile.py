@@ -6,7 +6,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 from app.models.profile import Profile
 from app.models.schemas.core import CoreModel
 
-ProfileGenOut = pydantic_model_creator(Profile, exclude="id")
+ProfileGenOut = pydantic_model_creator(Profile, exclude=("id", "created_at", "modified_at"))
 
 
 class ProfileBase(CoreModel):

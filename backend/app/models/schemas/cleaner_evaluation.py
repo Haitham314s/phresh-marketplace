@@ -30,6 +30,9 @@ class CleanerEvaluationBase(CoreModel):
 
 
 class CleanerEvaluationOut(CleanerEvaluationGenOut, CoreModel):
+    professionalism: int
+    completeness: int
+    efficiency: int
     overall_rating: float
     cleaner: UserPublicOut | None = None
     cleaning: CleaningOut | None = None

@@ -8,7 +8,6 @@ import {
 } from "@elastic/eui"
 import React from "react"
 import styled from "styled-components"
-
 import bathroom from "../../assets/img/Bathroom.svg"
 import dorm from "../../assets/img/Bed.svg"
 import bedroom from "../../assets/img/Bedroom.svg"
@@ -17,7 +16,6 @@ import kitchen from "../../assets/img/Kitchen.svg"
 import livingRoom from "../../assets/img/Living_room_interior.svg"
 import readingRoom from "../../assets/img/Reading_room.svg"
 import tvRoom from "../../assets/img/TV_room.svg"
-
 import { Carousel, CarouselTitle } from "../../components"
 import { useCarousel } from "../../hooks/useCarousel"
 

@@ -1,5 +1,5 @@
 {
-  "name": "phresh-frontend-part-1-elastic-ui-landing-page-carousel-title-with-framer-motion",
+  "name": "phresh-frontend",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
@@ -7,6 +7,7 @@
   "dependencies": {
     "@elastic/datemath": "5.0.3",
     "@elastic/eui": "28.0.0",
+    "@reduxjs/toolkit": "1.4.0",
     "axios": "0.19.2",
     "framer-motion": "2.4.2",
     "history": "5.0.0",
