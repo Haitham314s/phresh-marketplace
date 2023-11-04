@@ -1,6 +1,7 @@
 import axios from "axios"
 import { BE_URL } from "../constants"
 import apiClient from "../services/apiClient"
+import { Actions as cleaningActions } from "./cleanings"
 import initialState from "./initialState"
 
 export const REQUEST_LOGIN = "@@auth/REQUEST_LOGIN"
@@ -86,6 +87,30 @@ export default function authReducer(state = initialState.auth, action = {}) {
 }
 
 export const Actions = {}
+
+Actions.fetchUserFromToken = () => {
+  return (dispatch) => {
+    return dispatch(
+      apiClient({
+        url: `/users/me/`,
+        method: `GET`,
+        types: {
+          REQUEST: FETCHING_USER_FROM_TOKEN,
+          SUCCESS: FETCHING_USER_FROM_TOKEN_SUCCESS,
+          FAILURE: FETCHING_USER_FROM_TOKEN_FAILURE
+        },
+        options: {
+          data: {},
+          params: {}
+        },
+        onSuccess: (res) => {
+          dispatch(cleaningActions.fetchAllUserOwnedCleaningJobs())
+          return { success: true, status: res.status, data: res.data }
+        }
+      })
+    )
+  }
+}
 
 Actions.requestUserLogin = ({ email, password }) => {
   return async (dispatch) => {

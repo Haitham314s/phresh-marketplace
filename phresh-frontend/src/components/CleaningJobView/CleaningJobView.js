@@ -12,12 +12,13 @@ import {
   EuiTitle
 } from "@elastic/eui"
 import React from "react"
-import { connect } from "react-redux"
+import { connect, shallowEqual, useSelector } from "react-redux"
 import { Route, Routes, useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
   CleaningJobCard,
   CleaningJobEditForm,
+  CleaningJobOffersTable,
   NotFoundPage,
   PermissionsNeeded
 } from "../../components"
@@ -37,22 +38,33 @@ function CleaningJobView({
   offersError,
   cleaningError,
   offersIsLoading,
+  offersIsUpdating,
   currentCleaningJob,
   fetchCleaningJobById,
   createOfferForCleaning,
   clearCurrentCleaningJob,
-  fetchUserOfferForCleaningJob
+  fetchUserOfferForCleaningJob,
+  fetchAllOffersForCleaningJob,
+  acceptUsersOfferForCleaningJob
 }) {
   const { cleaning_id } = useParams()
   const navigate = useNavigate()
-
-  const userOwnsCleaningResource = user?.username && currentCleaningJob?.owner?.id === user?.id
+  const userOwnsCleaningResource = useSelector(
+    (state) => state.cleanings.data?.[cleaning_id]?.owner === user?.id,
+    shallowEqual
+  )
+  const allOffersForCleaningJob = useSelector(
+    (state) => state.offers.data?.[cleaning_id],
+    shallowEqual
+  )
 
   React.useEffect(() => {
     if (cleaning_id && user?.username) {
       fetchCleaningJobById({ cleaning_id })
 
-      if (!userOwnsCleaningResource) {
+      if (userOwnsCleaningResource) {
+        fetchAllOffersForCleaningJob({ cleaning_id })
+      } else {
         fetchUserOfferForCleaningJob({ cleaning_id, username: user.username })
       }
     }
@@ -64,16 +76,9 @@ function CleaningJobView({
     clearCurrentCleaningJob,
     userOwnsCleaningResource,
     fetchUserOfferForCleaningJob,
+    fetchAllOffersForCleaningJob,
     user
   ])
-
-  React.useEffect(() => {
-    if (cleaning_id) {
-      fetchCleaningJobById({ cleaning_id })
-    }
-
-    return () => clearCurrentCleaningJob()
-  }, [cleaning_id, fetchCleaningJobById, clearCurrentCleaningJob])
 
   if (isLoading) return <EuiLoadingSpinner size="xl" />
   if (!currentCleaningJob) return <EuiLoadingSpinner size="xl" />
@@ -96,18 +101,28 @@ function CleaningJobView({
     <CleaningJobCard
       user={user}
       offersError={offersError}
-      cleaningJob={currentCleaningJob}
       offersIsLoading={offersIsLoading}
+      cleaningJob={currentCleaningJob}
       isOwner={userOwnsCleaningResource}
       createOfferForCleaning={createOfferForCleaning}
     />
   )
+
   const editCleaningJobElement = (
     <PermissionsNeeded
       element={<CleaningJobEditForm cleaningJob={currentCleaningJob} />}
       isAllowed={userOwnsCleaningResource}
     />
   )
+
+  const cleaningJobOffersTableElement = userOwnsCleaningResource ? (
+    <CleaningJobOffersTable
+      offers={allOffersForCleaningJob ? Object.values(allOffersForCleaningJob) : []}
+      offersIsUpdating={offersIsUpdating}
+      offersIsLoading={offersIsLoading}
+      handleAcceptOffer={acceptUsersOfferForCleaningJob}
+    />
+  ) : null
 
   return (
     <StyledEuiPage>
@@ -156,6 +171,10 @@ function CleaningJobView({
             </Routes>
           </EuiPageContentBody>
         </EuiPageContent>
+
+        <Routes>
+          <Route path="/" element={cleaningJobOffersTableElement} />
+        </Routes>
       </EuiPageBody>
     </StyledEuiPage>
   )
@@ -166,6 +185,7 @@ export default connect(
     user: state.auth.user,
     isLoading: state.cleanings.isLoading,
     offersIsLoading: state.offers.isLoading,
+    offersIsUpdating: state.offers.isUpdating,
     offersError: state.offers.error,
     cleaningError: state.cleanings.cleaningsError,
     currentCleaningJob: state.cleanings.currentCleaningJob
@@ -174,6 +194,8 @@ export default connect(
     fetchCleaningJobById: cleaningActions.fetchCleaningJobById,
     clearCurrentCleaningJob: cleaningActions.clearCurrentCleaningJob,
     fetchUserOfferForCleaningJob: offersActions.fetchUserOfferForCleaningJob,
-    createOfferForCleaning: offersActions.createOfferForCleaning
+    fetchAllOffersForCleaningJob: offersActions.fetchAllOffersForCleaningJob,
+    createOfferForCleaning: offersActions.createOfferForCleaning,
+    acceptUsersOfferForCleaningJob: offersActions.acceptUsersOfferForCleaningJob
   }
 )(CleaningJobView)
