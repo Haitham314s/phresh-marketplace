@@ -12,9 +12,14 @@ import {
 import React from "react"
 import { connect } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import styled from "styled-components"
 import { Actions as cleaningActions } from "../../redux/cleanings"
 import { extractErrorMessages } from "../../utils/errors"
 import validation from "../../utils/validation"
+
+const Wrapper = styled.div`
+  padding: 1rem 2rem;
+`
 
 const cleaningTypeOptions = [
   {
@@ -63,12 +68,13 @@ const cleaningTypeOptions = [
   }
 ]
 
-function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning }) {
+function CleaningJobEditForm({ cleaningJob, cleaningError, isUpdating, updateCleaning }) {
+  const { name, description, price, cleaning_type } = cleaningJob
   const [form, setForm] = React.useState({
-    name: "",
-    description: "",
-    price: "",
-    cleaning_type: cleaningTypeOptions[0].value
+    name,
+    description,
+    price,
+    cleaning_type
   })
   const [errors, setErrors] = React.useState({})
   const [hasSubmitted, setHasSubmitted] = React.useState(false)
@@ -107,11 +113,11 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
 
     setHasSubmitted(true)
 
-    const res = await createCleaning({ new_cleaning: { ...form } })
+    const res = await updateCleaning({ cleaning_id: cleaningJob.id, cleaning_update: { ...form } })
     if (res.success) {
+      // redirect user to updated cleaning job post
       const cleaningId = res.data?.id
-      navigate(`/jobs/${cleaningId}`)
-      // redirect user to new cleaning job post
+      navigate(`/cleaning-jobs/${cleaningId}`)
     }
   }
 
@@ -130,7 +136,7 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
   }
 
   return (
-    <>
+    <Wrapper>
       <EuiForm
         component="form"
         onSubmit={handleSubmit}
@@ -154,7 +160,6 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
           <EuiSuperSelect
             options={cleaningTypeOptions}
             valueOfSelected={form.cleaning_type}
-            // hasNoInitialSelection
             onChange={(value) => onCleaningTypeChange(value)}
             itemLayoutAlign="top"
             hasDividers
@@ -192,21 +197,20 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
 
         <EuiSpacer />
 
-        <EuiButton type="submit" isLoading={isLoading} fill>
-          Create Cleaning
+        <EuiButton type="submit" isLoading={isUpdating} fill iconType="save" iconSide="right">
+          Update Cleaning
         </EuiButton>
       </EuiForm>
-    </>
+    </Wrapper>
   )
 }
 
 export default connect(
   (state) => ({
-    user: state.auth.user,
-    isLoading: state.cleanings.isLoading,
+    isUpdating: state.cleanings.isUpdating,
     cleaningError: state.cleanings.error
   }),
   {
-    createCleaning: cleaningActions.createCleaningJob
+    updateCleaning: cleaningActions.updateCleaningJob
   }
-)(CleaningJobCreateForm)
+)(CleaningJobEditForm)

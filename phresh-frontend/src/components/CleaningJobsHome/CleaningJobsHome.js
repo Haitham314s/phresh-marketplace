@@ -1,4 +1,7 @@
 import {
+  // EuiAvatar,
+  // EuiHorizontalRule,
+  // EuiIcon,
   EuiPage,
   EuiPageBody,
   EuiPageContent,
@@ -6,6 +9,7 @@ import {
   EuiPageHeader,
   EuiPageHeaderSection,
   EuiTitle
+  // EuiText,
 } from "@elastic/eui"
 import React from "react"
 import { connect } from "react-redux"
@@ -33,11 +37,10 @@ function CleaningJobsHome({ user }) {
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
             <EuiTitle size="l">
-              <h1>Cleaning Jobs</h1>
+              <h1>Cleaners</h1>
             </EuiTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
-
         <EuiPageContent verticalPosition="center" horizontalPosition="center">
           <EuiPageContentBody>
             <>
@@ -49,5 +52,5 @@ function CleaningJobsHome({ user }) {
     </StyledEuiPage>
   )
 }
-s
+
 export default connect((state) => ({ user: state.auth.user }))(CleaningJobsHome)
