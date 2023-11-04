@@ -22,6 +22,7 @@ import {
   PermissionsNeeded
 } from "../../components"
 import { Actions as cleaningActions } from "../../redux/cleanings"
+import { Actions as offersActions } from "../../redux/offers"
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
@@ -33,13 +34,38 @@ const StyledFlexGroup = styled(EuiFlexGroup)`
 function CleaningJobView({
   user,
   isLoading,
+  offersError,
   cleaningError,
+  offersIsLoading,
   currentCleaningJob,
   fetchCleaningJobById,
-  clearCurrentCleaningJob
+  createOfferForCleaning,
+  clearCurrentCleaningJob,
+  fetchUserOfferForCleaningJob
 }) {
   const { cleaning_id } = useParams()
   const navigate = useNavigate()
+
+  const userOwnsCleaningResource = user?.username && currentCleaningJob?.owner?.id === user?.id
+
+  React.useEffect(() => {
+    if (cleaning_id && user?.username) {
+      fetchCleaningJobById({ cleaning_id })
+
+      if (!userOwnsCleaningResource) {
+        fetchUserOfferForCleaningJob({ cleaning_id, username: user.username })
+      }
+    }
+
+    return () => clearCurrentCleaningJob()
+  }, [
+    cleaning_id,
+    fetchCleaningJobById,
+    clearCurrentCleaningJob,
+    userOwnsCleaningResource,
+    fetchUserOfferForCleaningJob,
+    user
+  ])
 
   React.useEffect(() => {
     if (cleaning_id) {
@@ -52,8 +78,6 @@ function CleaningJobView({
   if (isLoading) return <EuiLoadingSpinner size="xl" />
   if (!currentCleaningJob) return <EuiLoadingSpinner size="xl" />
   if (!currentCleaningJob?.name) return <NotFoundPage />
-
-  const userOwnsCleaningResource = currentCleaningJob?.owner?.id === user?.id
 
   const editJobButton = userOwnsCleaningResource ? (
     <EuiButtonIcon iconType="documentEdit" aria-label="edit" onClick={() => navigate(`edit`)} />
@@ -68,6 +92,16 @@ function CleaningJobView({
     </EuiButtonEmpty>
   )
 
+  const viewCleaningJobElement = (
+    <CleaningJobCard
+      user={user}
+      offersError={offersError}
+      cleaningJob={currentCleaningJob}
+      offersIsLoading={offersIsLoading}
+      isOwner={userOwnsCleaningResource}
+      createOfferForCleaning={createOfferForCleaning}
+    />
+  )
   const editCleaningJobElement = (
     <PermissionsNeeded
       element={<CleaningJobEditForm cleaningJob={currentCleaningJob} />}
@@ -116,7 +150,7 @@ function CleaningJobView({
 
           <EuiPageContentBody>
             <Routes>
-              <Route path="/" element={<CleaningJobCard cleaningJob={currentCleaningJob} />} />
+              <Route path="/" element={viewCleaningJobElement} />
               <Route path="/edit" element={editCleaningJobElement} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
@@ -131,11 +165,15 @@ export default connect(
   (state) => ({
     user: state.auth.user,
     isLoading: state.cleanings.isLoading,
+    offersIsLoading: state.offers.isLoading,
+    offersError: state.offers.error,
     cleaningError: state.cleanings.cleaningsError,
     currentCleaningJob: state.cleanings.currentCleaningJob
   }),
   {
     fetchCleaningJobById: cleaningActions.fetchCleaningJobById,
-    clearCurrentCleaningJob: cleaningActions.clearCurrentCleaningJob
+    clearCurrentCleaningJob: cleaningActions.clearCurrentCleaningJob,
+    fetchUserOfferForCleaningJob: offersActions.fetchUserOfferForCleaningJob,
+    createOfferForCleaning: offersActions.createOfferForCleaning
   }
 )(CleaningJobView)

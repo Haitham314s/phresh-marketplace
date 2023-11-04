@@ -8,7 +8,9 @@ import {
   EuiSpacer,
   EuiText
 } from "@elastic/eui"
+import moment from "moment"
 import React from "react"
+import { shallowEqual, useSelector } from "react-redux"
 import styled from "styled-components"
 
 const ImageHolder = styled.div`
@@ -27,7 +29,19 @@ const cleaningTypeToDisplayNameMapping = {
   full_clean: "Full Clean"
 }
 
-export default function CleaningJobCard({ cleaningJob }) {
+export default function CleaningJobCard({
+  user,
+  isOwner,
+  offersError,
+  cleaningJob,
+  offersIsLoading,
+  createOfferForCleaning
+}) {
+  const userOfferForCleaningJob = useSelector(
+    (state) => state.offers.data?.[cleaningJob?.id]?.[user?.id],
+    shallowEqual
+  )
+
   const image = (
     <ImageHolder>
       <EuiLoadingChart size="xl" style={{ position: "absolute", zIndex: 1 }} />
@@ -54,11 +68,25 @@ export default function CleaningJobCard({ cleaningJob }) {
           <EuiText>Hourly Rate: ${cleaningJob.price}</EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton>Offer Services</EuiButton>
+          {isOwner || userOfferForCleaningJob ? null : (
+            <EuiButton
+              onClick={() => createOfferForCleaning({ cleaning_id: cleaningJob.id })}
+              isLoading={offersIsLoading}
+            >
+              Offer Services
+            </EuiButton>
+          )}
         </EuiFlexItem>
       </EuiFlexGroup>
     </>
   )
+
+  const betaBadgeLabel = userOfferForCleaningJob
+    ? `Offer ${userOfferForCleaningJob.status}`.toUpperCase()
+    : null
+  const betaBadgeTooltipContent = userOfferForCleaningJob
+    ? `Offer sent on ${moment(new Date(userOfferForCleaningJob.created_at)).format("MMM Do YYYY")}`
+    : null
 
   return (
     <EuiCard
@@ -66,6 +94,8 @@ export default function CleaningJobCard({ cleaningJob }) {
       textAlign="left"
       image={image}
       title={title}
+      betaBadgeLabel={betaBadgeLabel}
+      betaBadgeTooltipContent={betaBadgeTooltipContent}
       description={cleaningJob.description}
       footer={footer}
     />
