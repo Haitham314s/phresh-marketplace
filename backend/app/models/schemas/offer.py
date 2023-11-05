@@ -18,6 +18,10 @@ class OfferUpdateIn(CoreModel):
     status: OfferStatus
 
 
+class OfferUserMixin(OfferBase):
+    user: UserPublicOut | None = None
+
+
 class OfferDetailOut(CoreModel):
     user: UserPublicOut
     cleaning: CleaningOut

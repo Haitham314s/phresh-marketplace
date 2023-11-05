@@ -13,7 +13,7 @@ from app.api.dependencies.offers import (
 from app.core.response import SUCCESS_RESPONSE
 from app.db.repositories import offer_repo
 from app.models import User, Cleaning
-from app.models.schemas.offer import OfferBase, OfferDetailOut, OfferUpdateIn
+from app.models.schemas.offer import OfferBase, OfferDetailOut, OfferUpdateIn, OfferUserMixin
 
 router = APIRouter()
 
@@ -29,10 +29,10 @@ async def create_offer(cleaning: Cleaning = Depends(get_cleaning_by_id), user: U
     return await offer_repo.create_cleaning_offer(offer_in)
 
 
-@router.get("s", response_model=list[OfferBase])
+@router.get("s", response_model=list[OfferUserMixin])
 async def list_cleaning_offers(cleaning: Cleaning = Depends(check_get_offer_permission)):
     cleaning_offers = await offer_repo.get_cleaning_offers(cleaning.id)
-    return [OfferBase.model_validate(offer, from_attributes=True) for offer in cleaning_offers]
+    return [OfferUserMixin.model_validate(offer, from_attributes=True) for offer in cleaning_offers]
 
 
 @router.get(
