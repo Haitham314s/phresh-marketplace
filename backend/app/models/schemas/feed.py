@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from app.models.schemas.cleaning import CleaningOut
-from app.models.schemas.core import CoreModel
+from .cleaning import CleaningOut
+from .core import CoreModel
+from .user import UserPublicOut
 
 
 class FeedItem(CoreModel):
@@ -16,3 +17,4 @@ class CleaningFeedItem(CleaningOut, FeedItem):
     created_at: datetime
     modified_at: datetime
     user_id: UUID
+    user: UserPublicOut | None = None

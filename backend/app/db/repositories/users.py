@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import EmailStr
 
 from app.core.error import APIException
@@ -31,6 +33,13 @@ class UserRepository:
 
     async def get_user_by_username(self, username: str, populate: bool = True) -> User | None:
         user = await User.get_or_none(username=username)
+        if populate:
+            return await self.populate_user(user)
+
+        return user if user is not None else None
+
+    async def get_user_by_id(self, user_id: UUID, populate: bool = True) -> User | None:
+        user = await User.get_or_none(id=user_id)
         if populate:
             return await self.populate_user(user)
 
