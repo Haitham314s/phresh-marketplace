@@ -4,6 +4,7 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
+from app.db.repositories import cleaning_repo
 from app.models import User, Cleaning
 from app.models.schemas.public_out import CleaningOut
 
@@ -47,4 +48,6 @@ async def test_total_cleaning_offers(
     cleaning = CleaningOut(**res.json())
     assert cleaning.total_offers > 0
     assert cleaning.total_offers == len(test_users)
-    assert cleaning.offers == []
+
+    test_cleaning = await cleaning_repo.get_cleaning_by_id(test_cleaning.id)
+    assert cleaning.offers == test_cleaning.offers

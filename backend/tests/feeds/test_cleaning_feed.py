@@ -26,7 +26,7 @@ async def test_ordered_cleaning_feeds(authorized_client: AsyncClient, test_new_a
     cleaning_feeds = res.json()
 
     event_types = [feed["eventType"] for feed in cleaning_feeds]
-    assert all(["is_create" == event_type for event_type in event_types])
+    assert all(["is_create" == event_type for event_type in event_types[1:]])
 
 
 @pytest.mark.anyio

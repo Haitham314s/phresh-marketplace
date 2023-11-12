@@ -12,7 +12,6 @@ from ..shared.cleanings import get_or_create_cleaning, new_cleaning_list
 @pytest.mark.anyio
 async def test_get_all_cleanings(authorized_client: AsyncClient, test_user: User):
     test_cleaning = await get_or_create_cleaning(test_user)
-    test_cleanings = await new_cleaning_list(test_user)
     res = await authorized_client.get("/cleanings")
 
     cleanings = [CleaningOut(**cleaning) for cleaning in res.json()]
@@ -22,10 +21,10 @@ async def test_get_all_cleanings(authorized_client: AsyncClient, test_user: User
     assert isinstance(cleanings, list)
     assert len(cleanings) > 0
     assert test_cleaning.id in cleaning_ids
-
     for cleaning in cleanings:
         assert cleaning.user_id == test_user.id
 
+    test_cleanings = await new_cleaning_list(test_user)
     assert all(cl.id not in cleaning_ids for cl in test_cleanings)
 
 

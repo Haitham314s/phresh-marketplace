@@ -1,3 +1,5 @@
+import asyncio
+
 from app.db.repositories import cleaning_repo
 from app.models import User
 from app.models.cleaning import CleaningType, Cleaning
@@ -31,9 +33,9 @@ async def new_cleaning(user: User) -> Cleaning:
     return await cleaning_repo.create_cleaning(cleaning, user)
 
 
-async def new_cleaning_list(user: User, limit: int = 5) -> list[CleaningOut]:
-    return [
-        CleaningOut.model_validate(
+async def new_cleaning_list(user: User, limit: int = 5) -> list[Cleaning]:
+    cleanings: tuple[Cleaning] = await asyncio.gather(
+        *[
             cleaning_repo.create_cleaning(
                 CleaningBase(
                     name=f"test cleaning {i}",
@@ -43,6 +45,8 @@ async def new_cleaning_list(user: User, limit: int = 5) -> list[CleaningOut]:
                 ),
                 user,
             )
-        )
-        for i in range(limit)
-    ]
+            for i in range(limit)
+        ]
+    )
+
+    return list(cleanings)
