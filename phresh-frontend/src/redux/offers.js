@@ -122,7 +122,7 @@ export const Actions = {}
 
 Actions.createOfferForCleaning = ({ cleaning_id }) => {
   return apiClient({
-    url: `/cleanings/${cleaning_id}/offers/`,
+    url: `/cleaning/${cleaning_id}/offer`,
     method: `POST`,
     types: {
       REQUEST: CREATE_OFFER_FOR_CLEANING_JOB,
@@ -136,9 +136,9 @@ Actions.createOfferForCleaning = ({ cleaning_id }) => {
   })
 }
 
-Actions.fetchUserOfferForCleaningJob = ({ cleaning_id, username }) => {
+Actions.fetchUserOfferForCleaningJob = ({ cleaning_id, offerId }) => {
   return apiClient({
-    url: `/cleanings/${cleaning_id}/offers/${username}/`,
+    url: `/cleaning/${cleaning_id}/offer/${offerId}`,
     method: `GET`,
     types: {
       REQUEST: FETCH_USER_OFFER_FOR_CLEANING_JOB,
@@ -154,7 +154,7 @@ Actions.fetchUserOfferForCleaningJob = ({ cleaning_id, username }) => {
 
 Actions.fetchAllOffersForCleaningJob = ({ cleaning_id }) => {
   return apiClient({
-    url: `/cleanings/${cleaning_id}/offers/`,
+    url: `/cleaning/${cleaning_id}/offers`,
     method: `GET`,
     types: {
       REQUEST: FETCH_ALL_OFFERS_FOR_CLEANING_JOB,
@@ -168,11 +168,11 @@ Actions.fetchAllOffersForCleaningJob = ({ cleaning_id }) => {
   })
 }
 
-Actions.acceptUsersOfferForCleaningJob = ({ username, cleaning_id }) => {
+Actions.acceptUsersOfferForCleaningJob = ({ offerId, cleaning_id }) => {
   return (dispatch) => {
     return dispatch(
       apiClient({
-        url: `/cleanings/${cleaning_id}/offers/${username}/`,
+        url: `/cleaning/${cleaning_id}/offer/${offerId}`,
         method: `PUT`,
         types: {
           REQUEST: ACCEPT_USERS_OFFER_FOR_CLEANING_JOB,

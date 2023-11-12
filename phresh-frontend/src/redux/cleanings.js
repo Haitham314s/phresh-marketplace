@@ -129,7 +129,7 @@ Actions.clearCurrentCleaningJob = () => ({ type: CLEAR_CURRENT_CLEANING_JOB })
 
 Actions.createCleaningJob = ({ new_cleaning }) => {
   return apiClient({
-    url: `/cleanings/`,
+    url: `/cleaning`,
     method: `POST`,
     types: {
       REQUEST: CREATE_CLEANING_JOB,
@@ -137,7 +137,7 @@ Actions.createCleaningJob = ({ new_cleaning }) => {
       FAILURE: CREATE_CLEANING_JOB_FAILURE
     },
     options: {
-      data: { new_cleaning },
+      data: { ...new_cleaning },
       params: {}
     }
   })
@@ -145,7 +145,7 @@ Actions.createCleaningJob = ({ new_cleaning }) => {
 
 Actions.fetchCleaningJobById = ({ cleaning_id }) => {
   return apiClient({
-    url: `/cleanings/${cleaning_id}/`,
+    url: `/cleaning/${cleaning_id}`,
     method: `GET`,
     types: {
       REQUEST: FETCH_CLEANING_JOB_BY_ID,
@@ -161,7 +161,7 @@ Actions.fetchCleaningJobById = ({ cleaning_id }) => {
 
 Actions.updateCleaningJob = ({ cleaning_id, cleaning_update }) => {
   return apiClient({
-    url: `/cleanings/${cleaning_id}/`,
+    url: `/cleaning/${cleaning_id}`,
     method: `PUT`,
     types: {
       REQUEST: UPDATE_CLEANING_JOB,
@@ -169,7 +169,7 @@ Actions.updateCleaningJob = ({ cleaning_id, cleaning_update }) => {
       FAILURE: UPDATE_CLEANING_JOB_FAILURE
     },
     options: {
-      data: { cleaning_update },
+      data: { ...cleaning_update },
       params: {}
     }
   })
@@ -177,7 +177,7 @@ Actions.updateCleaningJob = ({ cleaning_id, cleaning_update }) => {
 
 Actions.fetchAllUserOwnedCleaningJobs = () => {
   return apiClient({
-    url: `/cleanings/`,
+    url: `/cleanings`,
     method: `GET`,
     types: {
       REQUEST: FETCH_ALL_USER_OWNED_CLEANING_JOBS,

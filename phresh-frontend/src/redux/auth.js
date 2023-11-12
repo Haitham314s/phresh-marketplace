@@ -1,4 +1,5 @@
 import axios from "axios"
+import { BE_URL } from "../constants"
 import apiClient from "../services/apiClient"
 import { Actions as cleaningActions } from "./cleanings"
 import initialState from "./initialState"
@@ -105,7 +106,7 @@ Actions.requestUserLogin = ({ email, password }) => {
       // make the actual HTTP request to our API
       const res = await axios({
         method: `POST`,
-        url: `http://localhost:8000/api/users/login/token/`,
+        url: `${BE_URL}/auth/token`,
         data: formData,
         headers
       })
@@ -130,7 +131,7 @@ Actions.registerNewUser = ({ username, email, password }) => {
   return (dispatch) =>
     dispatch(
       apiClient({
-        url: `/users/`,
+        url: `/auth/user`,
         method: `POST`,
         types: {
           REQUEST: REQUEST_USER_SIGN_UP,
@@ -138,7 +139,7 @@ Actions.registerNewUser = ({ username, email, password }) => {
           FAILURE: REQUEST_USER_SIGN_UP_FAILURE
         },
         options: {
-          data: { new_user: { username, email, password } },
+          data: { username, email, password },
           params: {}
         },
         onSuccess: (res) => {
@@ -157,7 +158,7 @@ Actions.fetchUserFromToken = () => {
   return (dispatch) => {
     return dispatch(
       apiClient({
-        url: `/users/me/`,
+        url: `/auth/user`,
         method: `GET`,
         types: {
           REQUEST: FETCHING_USER_FROM_TOKEN,

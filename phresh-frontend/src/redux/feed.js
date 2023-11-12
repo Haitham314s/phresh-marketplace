@@ -1,4 +1,3 @@
-import moment from "moment"
 import { REQUEST_LOG_USER_OUT } from "redux/auth"
 import initialState from "redux/initialState"
 import apiClient from "services/apiClient"
@@ -49,11 +48,11 @@ export default function feedReducer(state = initialState.feed, action = {}) {
 
 export const Actions = {}
 
-Actions.fetchCleaningFeedItems = (starting_date = new Date(), page_chunk_size = 20) => {
+Actions.fetchCleaningFeedItems = (page = 0, limit = 10) => {
   return (dispatch) => {
     return dispatch(
       apiClient({
-        url: `/feed/cleanings/`,
+        url: `/feed/cleanings`,
         method: `GET`,
         types: {
           REQUEST: FETCH_CLEANING_FEED_ITEMS,
@@ -63,15 +62,15 @@ Actions.fetchCleaningFeedItems = (starting_date = new Date(), page_chunk_size = 
         options: {
           data: {},
           params: {
-            starting_date: moment(starting_date).format(),
-            page_chunk_size
+            page,
+            limit
           }
         },
         onSuccess: (res) => {
           dispatch({
             type: SET_HAS_NEXT_FOR_FEED,
             feed: "cleaning",
-            hasNext: Boolean(res?.data?.length === page_chunk_size)
+            hasNext: Boolean(res?.data?.length === limit)
           })
           return { success: true, status: res.status, data: res.data }
         }
