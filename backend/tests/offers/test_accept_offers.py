@@ -7,9 +7,9 @@ from httpx import AsyncClient
 from app.db.repositories import offer_repo
 from app.models import User
 from app.models.offer import OfferStatus
-from app.models.schemas.offer import OfferBase, OfferDetailOut
+from app.models.schemas.offer import OfferBase
+from app.models.schemas.public_out import OfferDetailOut
 from tests.shared.offers import new_cleaning_with_offers
-
 
 accept_offer_in = {"status": OfferStatus.accepted}
 

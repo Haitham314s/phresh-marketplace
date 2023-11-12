@@ -13,7 +13,8 @@ from app.api.dependencies.offers import (
 from app.core.response import SUCCESS_RESPONSE
 from app.db.repositories import offer_repo
 from app.models import User, Cleaning
-from app.models.schemas.offer import OfferBase, OfferDetailOut, OfferUpdateIn, OfferUserMixin
+from app.models.schemas.offer import OfferBase, OfferUpdateIn, OfferUserMixin
+from app.models.schemas.public_out import OfferDetailOut
 
 router = APIRouter()
 

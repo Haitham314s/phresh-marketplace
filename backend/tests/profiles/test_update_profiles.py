@@ -19,7 +19,7 @@ async def test_update_user_profile(authorized_client: AsyncClient, test_user: Us
     for key, value in profile_in.items():
         assert getattr(test_user.profile, key) != value
 
-    res = await authorized_client.put("/user/profile", json=profile_in)
+    res = await authorized_client.put("/auth/user/profile", json=profile_in)
     assert res.status_code == 200
     profile = ProfileOut(**res.json())
 
@@ -40,5 +40,5 @@ async def test_update_user_profile(authorized_client: AsyncClient, test_user: Us
 async def test_invalid_update_user_profile(
     authorized_client: AsyncClient, test_user: User, profile_in: dict, status_code
 ):
-    res = await authorized_client.put("/user/profile", json=profile_in)
+    res = await authorized_client.put("/auth/user/profile", json=profile_in)
     assert res.status_code == status_code

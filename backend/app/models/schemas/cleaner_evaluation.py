@@ -4,9 +4,9 @@ from pydantic import conint, confloat, model_validator
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 from app.models.cleaner_evaluation import CleanerEvaluation
-from app.models.schemas.cleaning import CleaningOut
-from app.models.schemas.core import CoreModel
-from app.models.schemas.user import UserPublicOut
+from .core import CoreModel
+from .public_out import CleaningOut
+from .user import UserPublicOut
 
 CleanerEvaluationGenOut = pydantic_model_creator(CleanerEvaluation, exclude=("modified_at", "created_at"))
 

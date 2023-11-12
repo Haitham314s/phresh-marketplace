@@ -9,7 +9,7 @@ from app.services import auth_service
 
 @pytest.mark.anyio
 async def test_get_authenticated_user(authorized_client: AsyncClient, test_user: User):
-    res = await authorized_client.get("/user")
+    res = await authorized_client.get("/auth/user")
     assert res.status_code == 200
 
     user = UserPublicOut(**res.json())
@@ -20,7 +20,7 @@ async def test_get_authenticated_user(authorized_client: AsyncClient, test_user:
 
 @pytest.mark.anyio
 async def test_unauthorized_user_access(client: AsyncClient, test_user: User):
-    res = await client.get("/user")
+    res = await client.get("/auth/user")
     assert res.status_code == 401
 
 
@@ -37,5 +37,5 @@ async def test_unauthorized_user_access(client: AsyncClient, test_user: User):
 @pytest.mark.anyio
 async def test_user_invalid_token(client: AsyncClient, test_user: User, jwt_prefix: str):
     token = auth_service.create_access_token_for_user(user=test_user, secret_key=config.secret_key)
-    res = await client.get("/user", headers={"Authorization": f"{jwt_prefix} {token}"})
+    res = await client.get("/auth/user", headers={"Authorization": f"{jwt_prefix} {token}"})
     assert res.status_code == 401

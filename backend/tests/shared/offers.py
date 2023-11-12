@@ -1,18 +1,18 @@
 import asyncio
 
 from app.db.repositories import cleaning_repo, offer_repo
-from app.models import User, Cleaning, Offer
+from app.models import User, Cleaning
 from app.models.offer import OfferStatus
 from app.models.schemas.cleaning import CleaningBase
 from app.models.schemas.offer import OfferBase, OfferUpdateIn
 
 
-async def new_cleaning_with_offers(user: User, users: list[User]) -> Cleaning:
+async def new_cleaning_with_offers(user: User, users: list[User], index: int | None = None) -> Cleaning:
     cleaning_in = CleaningBase(
-        name="cleaning with offers",
-        description="desc for cleaning",
-        price=9.99,
-        cleaning_type="full_clean",
+        name=f"cleaning with offers{f' - {index}' if index is not None else ''}",
+        description=f"desc for cleaning{f' - {index}' if index is not None else ''}",
+        price=float(f"{index if index is not None else ''}9.99"),
+        cleaning_type=f"{'full_clean' if index is not None else 'spot_clean'}",
     )
     cleaning = await cleaning_repo.create_cleaning(cleaning_in, user)
 
@@ -33,3 +33,10 @@ async def new_cleaning_with_accepted_offer(user: User, users: list[User]) -> Cle
     offer_in = OfferUpdateIn(status=OfferStatus.accepted, cleaning_id=cleaning.id, user_id=user.id)
     await offer_repo.update_cleaning_offer(offer.id, offer_in)
     return cleaning
+
+
+async def new_cleanings_with_pending_offer(user: User, users: list[User]) -> list[Cleaning]:
+    cleanings: tuple[Cleaning] = await asyncio.gather(
+        *[new_cleaning_with_offers(user, users, index) for index in range(5)]
+    )
+    return list(cleanings)

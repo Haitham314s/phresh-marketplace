@@ -8,7 +8,8 @@ from app.api.dependencies.cleanings import get_cleaning_by_id
 from app.core.response import SUCCESS_RESPONSE
 from app.db.repositories import cleaning_repo
 from app.models import User, Cleaning
-from app.models.schemas.cleaning import CleaningBase, CleaningOut, CleaningUpdateIn
+from app.models.schemas.cleaning import CleaningBase, CleaningUpdateIn
+from app.models.schemas.public_out import CleaningOut
 
 router = APIRouter()
 

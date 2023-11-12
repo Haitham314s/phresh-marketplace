@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from .cleaning import CleaningOut
+from .public_out import CleaningOut
 from .core import CoreModel
 from .user import UserPublicOut
 

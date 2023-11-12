@@ -6,8 +6,16 @@ from app.core.config import config
 from app.db.tasks import close_db_connection, connect_to_db
 
 
+PREFIX_URL = "/api"
+
+
 def get_application():
-    app = FastAPI(title=config.project_name, version=config.project_version)
+    app = FastAPI(
+        title=config.project_name,
+        version=config.project_version,
+        docs_url=f"{PREFIX_URL}/docs",
+        openapi_url=f"{PREFIX_URL}/apidoc.json",
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -16,7 +24,7 @@ def get_application():
         allow_headers=["*"],
     )
 
-    app.include_router(api_router, prefix="/api")
+    app.include_router(api_router, prefix=PREFIX_URL)
     return app
 
 

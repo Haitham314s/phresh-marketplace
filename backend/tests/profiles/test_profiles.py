@@ -8,7 +8,7 @@ from app.models import User, Profile
 @pytest.mark.anyio
 async def test_created_profile(client: AsyncClient):
     new_user = {"email": "dwayne@johnson.io", "username": "therock", "password": "dwaynetherockjohnson"}
-    res = await client.post("/user", json=new_user)
+    res = await client.post("/auth/user", json=new_user)
     assert res.status_code == 201
 
     user_res = res.json()
@@ -20,9 +20,9 @@ async def test_created_profile(client: AsyncClient):
 
 @pytest.mark.anyio
 async def test_routes(client: AsyncClient, test_user: User):
-    res = await client.get("/user/profile")
+    res = await client.get("/auth/user/profile")
     assert res.status_code != 404
 
     # Update own profile
-    res = await client.put("/user/profile", json={})
+    res = await client.put("/auth/user/profile", json={})
     assert res.status_code != 404

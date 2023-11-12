@@ -1,7 +1,8 @@
 from app.db.repositories import cleaning_repo
 from app.models import User
 from app.models.cleaning import CleaningType, Cleaning
-from app.models.schemas.cleaning import CleaningBase, CleaningOut
+from app.models.schemas.cleaning import CleaningBase
+from app.models.schemas.public_out import CleaningOut
 
 
 async def get_or_create_cleaning(user: User) -> Cleaning:
@@ -30,7 +31,7 @@ async def new_cleaning(user: User) -> Cleaning:
     return await cleaning_repo.create_cleaning(cleaning, user)
 
 
-async def new_cleaning_list(user: User, limit: 5) -> list[CleaningOut]:
+async def new_cleaning_list(user: User, limit: int = 5) -> list[CleaningOut]:
     return [
         CleaningOut.model_validate(
             cleaning_repo.create_cleaning(

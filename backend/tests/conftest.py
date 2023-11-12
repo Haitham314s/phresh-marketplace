@@ -13,6 +13,7 @@ from app.services import auth_service
 from .helpers import user_fixture_helper
 from .shared.evaluations import new_evaluated_cleaning_list
 from .shared.feeds import new_and_updated_cleanings
+from .shared.offers import new_cleanings_with_pending_offer
 
 DATABASE_URL = "sqlite://test-db.sqlite"
 
@@ -108,3 +109,8 @@ async def test_evaluated_cleanings(test_user2: User, test_users: list[User]):
 @pytest.fixture(scope="session")
 async def test_new_and_updated_cleanings(test_users: list[User]):
     return await new_and_updated_cleanings(test_users)
+
+
+@pytest.fixture(scope="session")
+async def test_new_cleanings_with_pending_offer(test_user: User, test_users: list[User]):
+    return await new_cleanings_with_pending_offer(test_user, test_users)
