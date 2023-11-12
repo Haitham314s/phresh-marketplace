@@ -69,12 +69,11 @@ const cleaningTypeOptions = [
 ]
 
 function CleaningJobEditForm({ cleaningJob, cleaningError, isUpdating, updateCleaning }) {
-  const { name, description, price, cleaning_type } = cleaningJob
   const [form, setForm] = React.useState({
-    name,
-    description,
-    price,
-    cleaning_type
+    name: cleaningJob.name,
+    description: cleaningJob.description || "",
+    price: cleaningJob.price,
+    cleaning_type: cleaningJob.cleaning_type
   })
   const [errors, setErrors] = React.useState({})
   const [hasSubmitted, setHasSubmitted] = React.useState(false)

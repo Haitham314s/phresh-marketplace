@@ -24,15 +24,14 @@ const getClient = (token = null) => {
  * @param {Object} types - object with three keys representing the different action types: REQUEST, SUCCESS, FAILURE
  * @param {Object} options - object with potential data and query params
  * @param {Function} onSuccess - callback to run with the returned data, if any
- * @param {Function} onFailure - callback to run with the returned error, if any
  */
 const apiClient = ({
   url,
   method,
   types: { REQUEST, SUCCESS, FAILURE },
   options: { data, params },
-  onSuccess = (res) => ({ type: res.type, success: true, status: res.status, data: res.data }),
-  onFailure = (res) => ({ type: res.type, success: false, status: res.status, error: res.error })
+  onSuccess = (res) => ({ success: true, status: res.status, data: res.data }),
+  onFailure = (res) => ({ success: false, status: res.status, error: res.error })
 }) => {
   return async (dispatch) => {
     const token = localStorage.getItem("access_token")

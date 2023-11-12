@@ -14,7 +14,7 @@ function ProtectedRoute({
 }) {
   const [toasts, setToasts] = React.useState([
     {
-      id: "auth-redirect-toast",
+      id: `auth-toast-redirect`,
       title: redirectTitle,
       color: "warning",
       iconType: "alert",

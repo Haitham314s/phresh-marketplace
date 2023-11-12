@@ -61,8 +61,8 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
       return
     }
 
-    setHasSubmitted(true)
     const action = await requestUserLogin({ email: form.email, password: form.password })
+    setHasSubmitted(true)
     // reset the password form state if the login attempt is not successful
     if (action?.type !== FETCHING_USER_FROM_TOKEN_SUCCESS) {
       setForm((form) => ({ ...form, password: "" }))

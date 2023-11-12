@@ -1,5 +1,5 @@
-import { EuiEmptyPrompt } from "@elastic/eui"
 import React from "react"
+import { EuiEmptyPrompt } from "@elastic/eui"
 
 export default function PermissionsNeeded({ element, isAllowed = false }) {
   if (!isAllowed) {

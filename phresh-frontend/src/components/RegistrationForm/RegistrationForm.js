@@ -12,8 +12,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
-
-import { FETCHING_USER_FROM_TOKEN_SUCCESS, Actions as authActions } from "../../redux/auth"
+import { Actions as authActions, FETCHING_USER_FROM_TOKEN_SUCCESS } from "../../redux/auth"
 import { extractErrorMessages } from "../../utils/errors"
 import validation from "../../utils/validation"
 
@@ -196,7 +195,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
           onChange={(e) => setAgreedToTermsCheckbox(e)}
         />
         <EuiSpacer />
-        <EuiButton type="submit" fill>
+        <EuiButton type="submit" isLoading={isLoading} fill>
           Sign Up
         </EuiButton>
       </EuiForm>

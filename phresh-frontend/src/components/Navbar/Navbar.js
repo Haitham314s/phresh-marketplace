@@ -16,7 +16,6 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
-
 import loginIcon from "../../assets/img/loginIcon.svg"
 import { Actions as authActions } from "../../redux/auth"
 
@@ -56,7 +55,7 @@ function Navbar({ user, logUserOut, ...props }) {
       {user?.profile ? (
         <EuiAvatar
           size="l"
-          name={user.profile?.fullName || user.username || "Anonymous"}
+          name={user.profile.full_name || user.username || "Anonymous"}
           initialsLength={2}
           imageUrl={user.profile.image}
         />
@@ -75,9 +74,9 @@ function Navbar({ user, logUserOut, ...props }) {
       <AvatarMenu>
         <EuiAvatar
           size="xl"
-          name={user.profile?.fullName || user.username || "Anonymous"}
+          name={user.profile.full_name || user.username || "Anonymous"}
           initialsLength={2}
-          imageUrl={user.profile?.image}
+          imageUrl={user.profile.image}
         />
         <EuiFlexGroup direction="column" className="avatar-actions">
           <EuiFlexItem grow={1}>
@@ -115,7 +114,7 @@ function Navbar({ user, logUserOut, ...props }) {
               Find Cleaners
             </EuiHeaderLink>
 
-            <EuiHeaderLink iconType="tag" onClick={() => navigate("/cleaning-jobs")}>
+            <EuiHeaderLink iconType="tag" href="/cleaning-jobs">
               Find Jobs
             </EuiHeaderLink>
 
@@ -129,10 +128,9 @@ function Navbar({ user, logUserOut, ...props }) {
       <EuiHeaderSection>
         <EuiPopover
           id="avatar-menu"
-          ownFocus
           isOpen={avatarMenuOpen}
           closePopover={closeAvatarMenu}
-          anchorPosition="downLeft"
+          anchorPosition="downRight"
           button={avatarButton}
           panelPaddingSize="l"
         >

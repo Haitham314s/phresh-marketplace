@@ -15,7 +15,7 @@ export const parseErrorDetail = (errorDetail) => {
     // because we use FastAPI's `Body(..., embed)` for all post requests
     // this should be an array of length 3, with shape: ["body", "new_user", "email"]
     if (errorDetail.loc[0] === "body") {
-      const invalidField = errorDetail.loc[1]
+      const invalidField = errorDetail.loc[2]
 
       if (errorFieldToMessageMapping[invalidField]) {
         errorMessage = errorFieldToMessageMapping[invalidField]

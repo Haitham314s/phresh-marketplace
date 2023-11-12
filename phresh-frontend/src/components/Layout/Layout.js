@@ -1,10 +1,10 @@
 import "@elastic/eui/dist/eui_theme_light.css"
 import euiVars from "@elastic/eui/dist/eui_theme_light.json"
+import "assets/css/fonts.css"
+import "assets/css/override.css"
 import React from "react"
 import { Helmet } from "react-helmet"
 import styled, { ThemeProvider } from "styled-components"
-import "../../assets/css/fonts.css"
-import "../../assets/css/override.css"
 import { Navbar } from "../../components"
 
 const customTheme = {

@@ -81,7 +81,6 @@ export default function cleaningsReducer(state = initialState.cleanings, action 
         currentCleaningJob: {
           ...state.currentCleaningJob,
           ...Object.keys(action.data).reduce((acc, key) => {
-            // prevent overwriting the cleaning owner's profile
             if (key !== "owner") acc[key] = action.data[key]
             return acc
           }, {})
@@ -93,7 +92,6 @@ export default function cleaningsReducer(state = initialState.cleanings, action 
         isUpdating: false,
         error: action.error
       }
-
     case FETCH_ALL_USER_OWNED_CLEANING_JOBS:
       return {
         ...state,

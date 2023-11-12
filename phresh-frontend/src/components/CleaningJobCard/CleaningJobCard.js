@@ -1,3 +1,4 @@
+import React from "react"
 import {
   EuiBadge,
   EuiButton,
@@ -9,7 +10,6 @@ import {
   EuiText
 } from "@elastic/eui"
 import moment from "moment"
-import React from "react"
 import { shallowEqual, useSelector } from "react-redux"
 import styled from "styled-components"
 

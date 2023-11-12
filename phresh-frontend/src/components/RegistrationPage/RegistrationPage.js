@@ -1,3 +1,4 @@
+import React from "react"
 import {
   EuiPage,
   EuiPageBody,
@@ -7,7 +8,6 @@ import {
   EuiPageHeaderSection,
   EuiTitle
 } from "@elastic/eui"
-import React from "react"
 import styled from "styled-components"
 import { RegistrationForm } from "../../components"
 

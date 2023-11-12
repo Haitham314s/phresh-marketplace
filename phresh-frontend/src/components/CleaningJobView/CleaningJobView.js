@@ -107,14 +107,12 @@ function CleaningJobView({
       createOfferForCleaning={createOfferForCleaning}
     />
   )
-
   const editCleaningJobElement = (
     <PermissionsNeeded
       element={<CleaningJobEditForm cleaningJob={currentCleaningJob} />}
       isAllowed={userOwnsCleaningResource}
     />
   )
-
   const cleaningJobOffersTableElement = userOwnsCleaningResource ? (
     <CleaningJobOffersTable
       offers={allOffersForCleaningJob ? Object.values(allOffersForCleaningJob) : []}

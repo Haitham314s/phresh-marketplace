@@ -1,23 +1,39 @@
+import React from "react"
 import {
-  // EuiAvatar,
-  // EuiHorizontalRule,
-  // EuiIcon,
+  EuiAccordion,
+  EuiIcon,
   EuiPage,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentBody,
   EuiPageHeader,
   EuiPageHeaderSection,
+  EuiSpacer,
   EuiTitle
-  // EuiText,
 } from "@elastic/eui"
-import React from "react"
+import { CleaningActivityFeed, CleaningJobCreateForm } from "components"
 import { connect } from "react-redux"
 import styled from "styled-components"
-import { CleaningJobCreateForm } from "../../components"
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
+
+  & .create-new-job-button {
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+
+    & > span {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    &:hover {
+      & > span {
+        color: dodgerblue;
+      }
+    }
+  }
 `
 const StyledEuiPageHeader = styled(EuiPageHeader)`
   display: flex;
@@ -31,23 +47,39 @@ const StyledEuiPageHeader = styled(EuiPageHeader)`
 `
 
 function CleaningJobsHome({ user }) {
+  const newJobButtonContent = (
+    <>
+      <EuiIcon type="broom" size="l" /> Post A New Cleaning Job
+    </>
+  )
+
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
             <EuiTitle size="l">
-              <h1>Cleaners</h1>
+              <h1>Cleaning Jobs</h1>
             </EuiTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
-        <EuiPageContent verticalPosition="center" horizontalPosition="center">
+        <EuiPageContent horizontalPosition="center">
           <EuiPageContentBody>
-            <>
+            <EuiAccordion
+              id="create-new-job-button"
+              arrowDisplay="none"
+              buttonContent={newJobButtonContent}
+              paddingSize="m"
+              buttonClassName="create-new-job-button"
+            >
               <CleaningJobCreateForm />
-            </>
+            </EuiAccordion>
           </EuiPageContentBody>
         </EuiPageContent>
+
+        <EuiSpacer />
+
+        <CleaningActivityFeed />
       </EuiPageBody>
     </StyledEuiPage>
   )

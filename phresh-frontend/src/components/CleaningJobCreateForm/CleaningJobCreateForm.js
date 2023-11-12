@@ -110,7 +110,7 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
     const res = await createCleaning({ new_cleaning: { ...form } })
     if (res.success) {
       const cleaningId = res.data?.id
-      navigate(`/jobs/${cleaningId}`)
+      navigate(`/cleaning-jobs/${cleaningId}`)
       // redirect user to new cleaning job post
     }
   }

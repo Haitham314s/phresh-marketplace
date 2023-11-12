@@ -1,3 +1,4 @@
+import React from "react"
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -6,7 +7,6 @@ import {
   EuiPageContent,
   EuiPageContentBody
 } from "@elastic/eui"
-import React from "react"
 import styled from "styled-components"
 import bathroom from "../../assets/img/Bathroom.svg"
 import dorm from "../../assets/img/Bed.svg"

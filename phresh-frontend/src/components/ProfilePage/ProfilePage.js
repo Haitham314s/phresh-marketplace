@@ -1,3 +1,4 @@
+import React from "react"
 import {
   EuiAvatar,
   EuiHorizontalRule,
@@ -12,7 +13,6 @@ import {
   EuiTitle
 } from "@elastic/eui"
 import moment from "moment"
-import React from "react"
 import { connect } from "react-redux"
 import styled from "styled-components"
 
@@ -54,9 +54,9 @@ function ProfilePage({ user }) {
           <StyledEuiPageContentBody>
             <EuiAvatar
               size="xl"
-              name={user.profile?.fullName || user.username || "Anonymous"}
+              name={user.profile.full_name || user.username || "Anonymous"}
               initialsLength={2}
-              imageUrl={user.profile?.image}
+              imageUrl={user.profile.image}
             />
             <EuiTitle size="l">
               <h2>@{user.username}</h2>
@@ -66,22 +66,20 @@ function ProfilePage({ user }) {
                 <EuiIcon type="email" /> {user.email}
               </p>
               <p>
-                <EuiIcon type="clock" /> member since {moment(user.createdAt).format("DD-MM-YYYY")}
+                <EuiIcon type="clock" /> member since {moment(user.created_at).format("MM-DD-YYYY")}
               </p>
               <p>
                 <EuiIcon type="alert" />{" "}
-                {user.profile?.fullName ? user.profile.fullName : "Full name not specified"}
+                {user.profile.full_name ? user.profile.full_name : "Full name not specified"}
               </p>
               <p>
                 <EuiIcon type="number" />{" "}
-                {user.profile?.phone ? user.profile.phone : "No phone number added"}
+                {user.profile.phone_number ? user.profile.phone_number : "No phone number added"}
               </p>
               <EuiHorizontalRule />
               <p>
                 <EuiIcon type="quote" />{" "}
-                {user.profile?.description
-                  ? user.profile.description
-                  : "This user hasn't written a bio yet"}
+                {user.profile.bio ? user.profile.bio : "This user hasn't written a bio yet"}
               </p>
             </EuiText>
           </StyledEuiPageContentBody>

@@ -1,5 +1,5 @@
-import { EuiButton, EuiEmptyPrompt } from "@elastic/eui"
 import React from "react"
+import { EuiButton, EuiEmptyPrompt } from "@elastic/eui"
 import { useNavigate } from "react-router-dom"
 
 export default function NotFoundPage({

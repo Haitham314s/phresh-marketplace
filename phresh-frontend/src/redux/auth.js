@@ -1,5 +1,4 @@
 import axios from "axios"
-import { BE_URL } from "../constants"
 import apiClient from "../services/apiClient"
 import { Actions as cleaningActions } from "./cleanings"
 import initialState from "./initialState"
@@ -88,30 +87,6 @@ export default function authReducer(state = initialState.auth, action = {}) {
 
 export const Actions = {}
 
-Actions.fetchUserFromToken = () => {
-  return (dispatch) => {
-    return dispatch(
-      apiClient({
-        url: `/users/me/`,
-        method: `GET`,
-        types: {
-          REQUEST: FETCHING_USER_FROM_TOKEN,
-          SUCCESS: FETCHING_USER_FROM_TOKEN_SUCCESS,
-          FAILURE: FETCHING_USER_FROM_TOKEN_FAILURE
-        },
-        options: {
-          data: {},
-          params: {}
-        },
-        onSuccess: (res) => {
-          dispatch(cleaningActions.fetchAllUserOwnedCleaningJobs())
-          return { success: true, status: res.status, data: res.data }
-        }
-      })
-    )
-  }
-}
-
 Actions.requestUserLogin = ({ email, password }) => {
   return async (dispatch) => {
     dispatch({ type: REQUEST_LOGIN })
@@ -130,7 +105,7 @@ Actions.requestUserLogin = ({ email, password }) => {
       // make the actual HTTP request to our API
       const res = await axios({
         method: `POST`,
-        url: `${BE_URL}/auth/token`,
+        url: `http://localhost:8000/api/users/login/token/`,
         data: formData,
         headers
       })
@@ -155,7 +130,7 @@ Actions.registerNewUser = ({ username, email, password }) => {
   return (dispatch) =>
     dispatch(
       apiClient({
-        url: `/user`,
+        url: `/users/`,
         method: `POST`,
         types: {
           REQUEST: REQUEST_USER_SIGN_UP,
@@ -163,53 +138,72 @@ Actions.registerNewUser = ({ username, email, password }) => {
           FAILURE: REQUEST_USER_SIGN_UP_FAILURE
         },
         options: {
-          data: { username, email, password },
+          data: { new_user: { username, email, password } },
           params: {}
         },
         onSuccess: (res) => {
           // stash the access_token our server returns
-          const access_token = res?.data?.accessToken?.accessToken
+          const access_token = res?.data?.access_token?.access_token
           localStorage.setItem("access_token", access_token)
 
           return dispatch(Actions.fetchUserFromToken(access_token))
         },
-        onFailure: (res) => ({
-          type: res.type,
-          success: false,
-          status: res.status,
-          error: res.error
-        })
+        onFailure: (res) => ({ success: false, status: res.status, error: res.error })
       })
     )
 }
 
-Actions.fetchUserFromToken = (access_token) => {
-  return async (dispatch) => {
-    dispatch({ type: FETCHING_USER_FROM_TOKEN })
-
-    const token = access_token ? access_token : localStorage.getItem("access_token")
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    }
-
-    try {
-      const res = await axios({
+Actions.fetchUserFromToken = () => {
+  return (dispatch) => {
+    return dispatch(
+      apiClient({
+        url: `/users/me/`,
         method: `GET`,
-        url: `${BE_URL}/user`,
-        headers
+        types: {
+          REQUEST: FETCHING_USER_FROM_TOKEN,
+          SUCCESS: FETCHING_USER_FROM_TOKEN_SUCCESS,
+          FAILURE: FETCHING_USER_FROM_TOKEN_FAILURE
+        },
+        options: {
+          data: {},
+          params: {}
+        },
+        onSuccess: (res) => {
+          dispatch(cleaningActions.fetchAllUserOwnedCleaningJobs())
+          return { success: true, status: res.status, data: res.data }
+        }
       })
-      console.log(res)
-
-      return dispatch({ type: FETCHING_USER_FROM_TOKEN_SUCCESS, data: res.data })
-    } catch (error) {
-      console.log(error)
-
-      return dispatch({ type: FETCHING_USER_FROM_TOKEN_FAILURE, error: error.message })
-    }
+    )
   }
 }
+
+// Actions.fetchUserFromToken = (access_token) => {
+//   return async (dispatch) => {
+//     dispatch({ type: FETCHING_USER_FROM_TOKEN })
+
+//     const token = access_token ? access_token : localStorage.getItem("access_token")
+
+//     const headers = {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`
+//     }
+
+//     try {
+//       const res = await axios({
+//         method: `GET`,
+//         url: `http://localhost:8000/api/users/me/`,
+//         headers
+//       })
+//       console.log(res)
+
+//       return dispatch({ type: FETCHING_USER_FROM_TOKEN_SUCCESS, data: res.data })
+//     } catch (error) {
+//       console.log(error)
+
+//       return dispatch({ type: FETCHING_USER_FROM_TOKEN_FAILURE, error: error.message })
+//     }
+//   }
+// }
 
 Actions.logUserOut = () => {
   localStorage.removeItem("access_token")
