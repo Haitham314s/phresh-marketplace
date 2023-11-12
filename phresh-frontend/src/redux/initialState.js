@@ -12,7 +12,7 @@ export default {
     isUpdating: false,
     error: null,
     data: {},
-    currentCleaningJob: null
+    activeCleaningId: null
   },
   offers: {
     isLoading: false,
@@ -29,4 +29,4 @@ export default {
   ui: {
     toastList: []
   }
-}
+};

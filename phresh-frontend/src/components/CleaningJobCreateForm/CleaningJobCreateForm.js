@@ -6,128 +6,47 @@ import {
   EuiFormRow,
   EuiSpacer,
   EuiSuperSelect,
-  EuiText,
   EuiTextArea
-} from "@elastic/eui"
-import React from "react"
-import { connect } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { Actions as cleaningActions } from "../../redux/cleanings"
-import { extractErrorMessages } from "../../utils/errors"
-import validation from "../../utils/validation"
+} from "@elastic/eui";
+import { useCleaningJobForm } from "hooks/ui/useCleaningJobForm";
+import React from "react";
+import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Actions as cleaningActions } from "redux/cleanings";
 
-const cleaningTypeOptions = [
-  {
-    value: "dust_up",
-    inputDisplay: "Dust Up",
-    dropdownDisplay: (
-      <React.Fragment>
-        <strong>Dust Up</strong>
-        <EuiText size="s" color="subdued">
-          <p className="euiTextColor--subdued">
-            A minimal clean job. Dust shelves and mantels, tidy rooms, and sweep floors.
-          </p>
-        </EuiText>
-      </React.Fragment>
-    )
-  },
-  {
-    value: "spot_clean",
-    inputDisplay: "Spot Clean",
-    dropdownDisplay: (
-      <React.Fragment>
-        <strong>Spot Clean</strong>
-        <EuiText size="s" color="subdued">
-          <p className="euiTextColor--subdued">
-            A standard clean job. Vacuum all indoor spaces, sanitize surfaces, and disinfect
-            targeted areas. Bathrooms, tubs, and toilets can be added on for an additional charge.
-          </p>
-        </EuiText>
-      </React.Fragment>
-    )
-  },
-  {
-    value: "full_clean",
-    inputDisplay: "Deep Clean",
-    dropdownDisplay: (
-      <React.Fragment>
-        <strong>Deep Clean</strong>
-        <EuiText size="s" color="subdued">
-          <p className="euiTextColor--subdued">
-            A complete clean job. Mop tile floors, scrub out tough spots, and a guaranteed clean
-            residence upon completion. Dishes, pots, and pans included in this package.
-          </p>
-        </EuiText>
-      </React.Fragment>
-    )
-  }
-]
-
-function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning }) {
-  const [form, setForm] = React.useState({
-    name: "",
-    description: "",
-    price: "",
-    cleaning_type: cleaningTypeOptions[0].value
-  })
-  const [errors, setErrors] = React.useState({})
-  const [hasSubmitted, setHasSubmitted] = React.useState(false)
-  const navigate = useNavigate()
-  const cleaningErrorList = extractErrorMessages(cleaningError)
-
-  const validateInput = (label, value) => {
-    // grab validation function and run it on input if it exists
-    // if it doesn't exists, just assume the input is valid
-    const isValid = validation?.[label] ? validation?.[label]?.(value) : true
-    // set an error if the validation function did NOT return true
-    setErrors((errors) => ({ ...errors, [label]: !isValid }))
-  }
-
-  const onInputChange = (label, value) => {
-    validateInput(label, value)
-
-    setForm((state) => ({ ...state, [label]: value }))
-  }
-
-  const onCleaningTypeChange = (cleaning_type) => {
-    setForm((state) => ({ ...state, cleaning_type }))
-  }
+function CleaningJobCreateForm({ createCleaning }) {
+  const navigate = useNavigate();
+  const {
+    form,
+    errors,
+    setErrors,
+    isLoading,
+    validateInput,
+    setHasSubmitted,
+    getFormErrors,
+    cleaningTypeOptions,
+    onCleaningTypeChange,
+    onInputChange
+  } = useCleaningJobForm();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    // validate inputs before submitting
-    Object.keys(form).forEach((label) => validateInput(label, form[label]))
+    Object.keys(form).forEach((label) => validateInput(label, form[label]));
 
-    // if any input hasn't been entered in, return early
     if (!Object.values(form).every((value) => Boolean(value))) {
-      setErrors((errors) => ({ ...errors, form: `You must fill out all fields.` }))
-      return
+      setErrors((errors) => ({ ...errors, form: `You must fill out all fields.` }));
+      return;
     }
 
-    setHasSubmitted(true)
+    setHasSubmitted(true);
 
-    const res = await createCleaning({ new_cleaning: { ...form } })
+    const res = await createCleaning({ new_cleaning: { ...form } });
     if (res.success) {
-      const cleaningId = res.data?.id
-      navigate(`/cleaning-jobs/${cleaningId}`)
-      // redirect user to new cleaning job post
+      const cleaningId = res.data?.id;
+      navigate(`/cleaning-jobs/${cleaningId}`);
     }
-  }
-
-  const getFormErrors = () => {
-    const formErrors = []
-
-    if (errors.form) {
-      formErrors.push(errors.form)
-    }
-
-    if (hasSubmitted && cleaningErrorList.length) {
-      return formErrors.concat(cleaningErrorList)
-    }
-
-    return formErrors
-  }
+  };
 
   return (
     <>
@@ -154,7 +73,6 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
           <EuiSuperSelect
             options={cleaningTypeOptions}
             valueOfSelected={form.cleaning_type}
-            // hasNoInitialSelection
             onChange={(value) => onCleaningTypeChange(value)}
             itemLayoutAlign="top"
             hasDividers
@@ -197,16 +115,9 @@ function CleaningJobCreateForm({ user, cleaningError, isLoading, createCleaning 
         </EuiButton>
       </EuiForm>
     </>
-  )
+  );
 }
 
-export default connect(
-  (state) => ({
-    user: state.auth.user,
-    isLoading: state.cleanings.isLoading,
-    cleaningError: state.cleanings.error
-  }),
-  {
-    createCleaning: cleaningActions.createCleaningJob
-  }
-)(CleaningJobCreateForm)
+export default connect(null, {
+  createCleaning: cleaningActions.createCleaningJob
+})(CleaningJobCreateForm);
