@@ -1,4 +1,3 @@
-import React from "react"
 import {
   EuiAvatar,
   EuiHorizontalRule,
@@ -11,14 +10,16 @@ import {
   EuiPageHeaderSection,
   EuiText,
   EuiTitle
-} from "@elastic/eui"
-import moment from "moment"
-import { connect } from "react-redux"
-import styled from "styled-components"
+} from "@elastic/eui";
+import { UserAvatar } from "components";
+import moment from "moment";
+import React from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
-`
+`;
 const StyledEuiPageHeader = styled(EuiPageHeader)`
   display: flex;
   justify-content: center;
@@ -28,7 +29,7 @@ const StyledEuiPageHeader = styled(EuiPageHeader)`
   & h1 {
     font-size: 3.5rem;
   }
-`
+`;
 const StyledEuiPageContentBody = styled(EuiPageContentBody)`
   display: flex;
   flex-direction: column;
@@ -37,7 +38,7 @@ const StyledEuiPageContentBody = styled(EuiPageContentBody)`
   & h2 {
     margin-bottom: 1rem;
   }
-`
+`;
 
 function ProfilePage({ user }) {
   return (
@@ -52,6 +53,8 @@ function ProfilePage({ user }) {
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">
           <StyledEuiPageContentBody>
+            <UserAvatar size="xl" user={user} initialsLength={2} />
+
             <EuiAvatar
               size="xl"
               name={user.profile.full_name || user.username || "Anonymous"}
@@ -86,7 +89,7 @@ function ProfilePage({ user }) {
         </EuiPageContent>
       </EuiPageBody>
     </StyledEuiPage>
-  )
+  );
 }
 
-export default connect((state) => ({ user: state.auth.user }))(ProfilePage)
+export default connect((state) => ({ user: state.auth.user }))(ProfilePage);

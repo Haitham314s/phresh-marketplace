@@ -1,4 +1,3 @@
-import React from "react"
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -6,31 +5,32 @@ import {
   EuiPageBody,
   EuiPageContent,
   EuiPageContentBody
-} from "@elastic/eui"
-import styled from "styled-components"
-import bathroom from "../../assets/img/Bathroom.svg"
-import dorm from "../../assets/img/Bed.svg"
-import bedroom from "../../assets/img/Bedroom.svg"
-import heroGirl from "../../assets/img/HeroGirl.svg"
-import kitchen from "../../assets/img/Kitchen.svg"
-import livingRoom from "../../assets/img/Living_room_interior.svg"
-import readingRoom from "../../assets/img/Reading_room.svg"
-import tvRoom from "../../assets/img/TV_room.svg"
-import { Carousel, CarouselTitle } from "../../components"
-import { useCarousel } from "../../hooks/useCarousel"
+} from "@elastic/eui";
+import bathroom from "assets/img/Bathroom.svg";
+import dorm from "assets/img/Bed.svg";
+import bedroom from "assets/img/Bedroom.svg";
+import heroGirl from "assets/img/HeroGirl.svg";
+import kitchen from "assets/img/Kitchen.svg";
+import livingRoom from "assets/img/Living_room_interior.svg";
+import readingRoom from "assets/img/Reading_room.svg";
+import tvRoom from "assets/img/TV_room.svg";
+import { Carousel, CarouselTitle } from "components";
+import { useCarousel } from "hooks/ui/useCarousel";
+import React from "react";
+import styled from "styled-components";
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
   padding-bottom: 5rem;
-`
+`;
 const LandingTitle = styled.h1`
   font-size: 3.5rem;
   margin: 2rem 0;
-`
+`;
 
 const StyledEuiPageContent = styled(EuiPageContent)`
   border-radius: 50%;
-`
+`;
 const StyledEuiPageContentBody = styled(EuiPageContentBody)`
   max-width: 400px;
   max-height: 400px;
@@ -40,7 +40,7 @@ const StyledEuiPageContentBody = styled(EuiPageContentBody)`
     border-radius: 50%;
     object-fit: cover;
   }
-`
+`;
 
 const carouselItems = [
   { label: "dorm room", content: <img src={dorm} alt="dorm room" /> },
@@ -50,10 +50,10 @@ const carouselItems = [
   { label: "kitchen", content: <img src={kitchen} alt="kitchen" /> },
   { label: "reading room", content: <img src={readingRoom} alt="reading room" /> },
   { label: "tv room", content: <img src={tvRoom} alt="tv room" /> }
-]
+];
 
 export default function LandingPage() {
-  const { current } = useCarousel(carouselItems, 3000)
+  const { current } = useCarousel(carouselItems, 3000);
 
   return (
     <StyledEuiPage>
@@ -81,5 +81,5 @@ export default function LandingPage() {
         </EuiFlexGroup>
       </EuiPageBody>
     </StyledEuiPage>
-  )
+  );
 }

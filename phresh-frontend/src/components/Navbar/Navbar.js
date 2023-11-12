@@ -11,17 +11,17 @@ import {
   EuiIcon,
   EuiLink,
   EuiPopover
-} from "@elastic/eui"
-import React from "react"
-import { connect } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
-import styled from "styled-components"
-import loginIcon from "../../assets/img/loginIcon.svg"
-import { Actions as authActions } from "../../redux/auth"
+} from "@elastic/eui";
+import loginIcon from "assets/img/loginIcon.svg";
+import { UserAvatar } from "components";
+import { useAuthenticatedUser } from "hooks/auth/useAuthenticatedUser";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const LogoSection = styled(EuiHeaderLink)`
   padding: 0 2rem;
-`
+`;
 
 const AvatarMenu = styled.div`
   display: flex;
@@ -31,21 +31,22 @@ const AvatarMenu = styled.div`
   & .avatar-actions {
     margin-left: 2rem;
   }
-`
+`;
 
-function Navbar({ user, logUserOut, ...props }) {
-  const [avatarMenuOpen, setAvatarMenuOpen] = React.useState(false)
-  const navigate = useNavigate()
+export default function Navbar() {
+  const navigate = useNavigate();
+  const [avatarMenuOpen, setAvatarMenuOpen] = React.useState(false);
+  const { user, logUserOut } = useAuthenticatedUser();
 
-  const toggleAvatarMenu = () => setAvatarMenuOpen(!avatarMenuOpen)
+  const toggleAvatarMenu = () => setAvatarMenuOpen(!avatarMenuOpen);
 
-  const closeAvatarMenu = () => setAvatarMenuOpen(false)
+  const closeAvatarMenu = () => setAvatarMenuOpen(false);
 
   const handleLogout = () => {
-    closeAvatarMenu()
-    logUserOut()
-    navigate("/")
-  }
+    closeAvatarMenu();
+    logUserOut();
+    navigate("/");
+  };
 
   const avatarButton = (
     <EuiHeaderSectionItemButton
@@ -53,31 +54,21 @@ function Navbar({ user, logUserOut, ...props }) {
       onClick={() => user?.profile && toggleAvatarMenu()}
     >
       {user?.profile ? (
-        <EuiAvatar
-          size="l"
-          name={user.profile.full_name || user.username || "Anonymous"}
-          initialsLength={2}
-          imageUrl={user.profile.image}
-        />
+        <UserAvatar size="l" user={user} initialsLength={2} />
       ) : (
         <Link to="/login">
           <EuiAvatar size="l" color="#1E90FF" name="user" imageUrl={loginIcon} />
         </Link>
       )}
     </EuiHeaderSectionItemButton>
-  )
+  );
 
   const renderAvatarMenu = () => {
-    if (!user?.profile) return null
+    if (!user?.profile) return null;
 
     return (
       <AvatarMenu>
-        <EuiAvatar
-          size="xl"
-          name={user.profile.full_name || user.username || "Anonymous"}
-          initialsLength={2}
-          imageUrl={user.profile.image}
-        />
+        <UserAvatar size="xl" user={user} initialsLength={2} />
         <EuiFlexGroup direction="column" className="avatar-actions">
           <EuiFlexItem grow={1}>
             <p>
@@ -97,11 +88,11 @@ function Navbar({ user, logUserOut, ...props }) {
           </EuiFlexItem>
         </EuiFlexGroup>
       </AvatarMenu>
-    )
-  }
+    );
+  };
 
   return (
-    <EuiHeader style={props.style || {}}>
+    <EuiHeader>
       <EuiHeaderSection>
         <EuiHeaderSectionItem border="right">
           <LogoSection href="/">
@@ -114,7 +105,7 @@ function Navbar({ user, logUserOut, ...props }) {
               Find Cleaners
             </EuiHeaderLink>
 
-            <EuiHeaderLink iconType="tag" href="/cleaning-jobs">
+            <EuiHeaderLink iconType="tag" onClick={() => navigate("/cleaning-jobs")}>
               Find Jobs
             </EuiHeaderLink>
 
@@ -138,9 +129,5 @@ function Navbar({ user, logUserOut, ...props }) {
         </EuiPopover>
       </EuiHeaderSection>
     </EuiHeader>
-  )
+  );
 }
-
-export default connect((state) => ({ user: state.auth.user }), {
-  logUserOut: authActions.logUserOut
-})(Navbar)
